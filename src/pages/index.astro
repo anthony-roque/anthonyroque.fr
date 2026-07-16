@@ -1,7 +1,7 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import MergeGlyph from '../components/MergeGlyph.astro';
-import { profile, metrics, timeline, beliefs, stack } from '../data/content';
+import { profile, metrics, timeline, beliefs, stack, project } from '../data/content';
 ---
 
 <Layout
@@ -63,7 +63,7 @@ import { profile, metrics, timeline, beliefs, stack } from '../data/content';
     <section id="parcours" aria-labelledby="parcours-title">
       <div class="wrap">
         <h2 id="parcours-title" class="section-title">
-          <span>Le parcours, en une ligne chacun</span>
+          <span>Le parcours</span>
         </h2>
         <ol class="timeline">
           {
@@ -135,11 +135,64 @@ import { profile, metrics, timeline, beliefs, stack } from '../data/content';
       </div>
     </section>
 
+    <!-- PROJECT -->
+    <section id="projet" aria-labelledby="projet-title">
+      <div class="wrap">
+        <h2 id="projet-title" class="section-title"><span>{project.title}</span></h2>
+
+        <figure class="projet__banner block block--yellow">
+          <img
+            src={project.image}
+            alt={project.imageAlt}
+            width="1920"
+            height="1080"
+            loading="lazy"
+          />
+        </figure>
+
+        <div class="projet__grid">
+          <div class="projet__col">
+            <article class="projet-card block">
+              <p class="projet-card__kicker">01 · Pourquoi</p>
+              <p class="projet-card__body">{project.why}</p>
+            </article>
+
+            <article class="projet-card block">
+              <p class="projet-card__kicker">02 · Objectifs</p>
+              <ol class="projet-card__goals">
+                {project.goals.map((g) => <li>{g}</li>)}
+              </ol>
+            </article>
+          </div>
+
+          <article class="projet-card projet-card--workflow block block--ink">
+            <p class="projet-card__kicker projet-card__kicker--ink">03 · Workflow de contenu SEO</p>
+            <p class="projet-card__intro">{project.workflow.intro}</p>
+            <ol class="projet-card__steps">
+              {project.workflow.steps.map((s) => <li>{s}</li>)}
+            </ol>
+            <p class="projet-card__outro">
+              Pour faire rédiger des articles de qualité, j'ai mis en place une base de connaissance
+              complète de +80 fichiers ainsi qu'une base de +30 cas clients (fichiers .md pour
+              faciliter le flow). Chaque article se base sur les fichiers pertinents selon le sujet
+              et <strong>chaque résultat est unique et impossible à dupliquer par quelqu'un d'autre.</strong>
+            </p>
+          </article>
+        </div>
+
+        <div class="projet__cta">
+          <a class="btn btn--primary" href="https://kind-dog-training.fr/" target="_blank" rel="noopener">
+            Voir le site ↗
+          </a>
+        </div>
+      </div>
+    </section>
+
     <!-- ABOUT -->
     <section id="perso" aria-labelledby="perso-title">
       <div class="wrap">
         <h2 id="perso-title" class="section-title"><span>En savoir un peu plus sur moi</span></h2>
-        <div class="about block push">
+        <div class="about block">
           <p class="about__body">
             J'adore les animaux (j'ai un chat et un chien) et en dehors du boulot j'aime passer du
             temps à la salle de sport car je suis passionné de bodybuilding. J'ai même concouru en
@@ -223,8 +276,8 @@ import { profile, metrics, timeline, beliefs, stack } from '../data/content';
 
   // Easter egg : rage-click sur une carte "gros impacts" → note fermable sous la carte.
   const messageFor = (n) => {
-    if (n >= 10) return 'arrête stp :(';
-    if (n >= 5) return "Le spam n'est pas toléré";
+    if (n >= 8) return 'Je suis pas venu ici pour souffrir oké ?';
+    if (n >= 4) return 'No spam, te voilà prévenu(e)';
     return null;
   };
 
@@ -414,6 +467,134 @@ import { profile, metrics, timeline, beliefs, stack } from '../data/content';
     font-weight: 800;
     line-height: 1;
     cursor: pointer;
+  }
+
+  /* PROJECT */
+  .projet__banner {
+    padding: 10px;
+    max-width: 640px;
+    margin: 0 auto 2.5rem;
+    transform: rotate(2.5deg);
+    transition: transform 0.3s var(--ease);
+  }
+
+  .projet__banner:hover {
+    transform: rotate(0deg);
+  }
+
+  .projet__banner img {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+    border-radius: 6px;
+  }
+
+  .projet__grid {
+    display: grid;
+    grid-template-columns: 1fr 1.15fr;
+    gap: 1.5rem;
+    align-items: start;
+  }
+
+  .projet__col {
+    display: grid;
+    gap: 1.5rem;
+  }
+
+  .projet-card {
+    padding: 1.5rem 1.4rem;
+  }
+
+  .projet-card__kicker {
+    font-size: 0.78rem;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--yellow-deep);
+    margin-bottom: 0.75rem;
+  }
+
+  .projet-card__kicker--ink {
+    color: var(--yellow);
+  }
+
+  .projet-card__body {
+    font-size: 1rem;
+    line-height: 1.55;
+  }
+
+  .projet-card__goals,
+  .projet-card__steps {
+    list-style: none;
+    display: grid;
+    gap: 0.55rem;
+    counter-reset: step;
+  }
+
+  .projet-card__goals li,
+  .projet-card__steps li {
+    position: relative;
+    padding-left: 2rem;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    counter-increment: step;
+  }
+
+  .projet-card__goals li::before,
+  .projet-card__steps li::before {
+    content: counter(step);
+    position: absolute;
+    left: 0;
+    top: 0.05rem;
+    width: 1.4rem;
+    height: 1.4rem;
+    display: grid;
+    place-items: center;
+    border-radius: 999px;
+    background: var(--yellow);
+    color: var(--ink);
+    font-size: 0.72rem;
+    font-weight: 800;
+    border: 2px solid var(--ink);
+  }
+
+  .projet-card--workflow .projet-card__steps li::before {
+    background: var(--yellow);
+    border-color: var(--yellow);
+  }
+
+  .projet-card__intro {
+    font-size: 0.95rem;
+    margin-bottom: 1rem;
+    opacity: 0.85;
+  }
+
+  .projet-card__outro {
+    font-size: 0.9rem;
+    line-height: 1.55;
+    margin-top: 1.25rem;
+    padding-top: 1.1rem;
+    border-top: 2px dashed var(--yellow);
+    opacity: 0.9;
+  }
+
+  .projet-card__outro strong {
+    color: var(--yellow);
+    opacity: 1;
+  }
+
+  .projet__cta {
+    display: flex;
+    justify-content: center;
+    margin-top: 2.5rem;
+  }
+
+  @media (max-width: 780px) {
+    .projet__grid {
+      grid-template-columns: 1fr;
+    }
   }
 
   @keyframes spam-pop {

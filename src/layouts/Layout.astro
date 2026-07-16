@@ -124,18 +124,20 @@ const { title, description } = Astro.props;
       box-shadow 0.16s var(--ease);
   }
 
-  .push:hover {
-    transform: translate(3px, 3px);
-    box-shadow: 3px 3px 0 var(--ink);
+  @media (hover: hover) {
+    .push:hover {
+      transform: translate(3px, 3px);
+      box-shadow: 3px 3px 0 var(--ink);
+    }
+
+    .block--ink.push:hover {
+      box-shadow: 3px 3px 0 var(--yellow);
+    }
   }
 
   .push:active {
     transform: translate(var(--lift), var(--lift));
     box-shadow: 0 0 0 var(--ink);
-  }
-
-  .block--ink.push:hover {
-    box-shadow: 3px 3px 0 var(--yellow);
   }
 
   .block--ink.push:active {

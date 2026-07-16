@@ -14,7 +14,7 @@ export const profile = {
 export const metrics = [
   { value: '2M€+', label: 'de budget media piloté', detail: 'SEA & Social Ads, 4 marchés européens' },
   { value: '0 → 100k€', label: "d'ARR sur un SaaS B2B", detail: 'premier employé marketing' },
-  { value: '÷2', label: 'de CPL sur l\'Europe du Sud', detail: 'à volume de leads en hausse de 25%' },
+  { value: 'CPL ÷ 2', label: 'sur l\'Europe du Sud', detail: 'pour un volume de leads en hausse de 25%' },
   {
     visual: 'merge' as const,
     label: 'tracking fusionné',
@@ -73,6 +73,32 @@ export const beliefs = [
     body: "Landing pages, automatisations, ce site. Le vibe coding a supprimé le ticket dev sur 80% de mes idées, donc je teste plus, et plus vite.",
   },
 ];
+
+export const project = {
+  title: 'Projet perso',
+  image: '/projet-perso.webp',
+  imageAlt: "Bannière du projet d'éducation canine à Bordeaux",
+  why: "Pour aider ma compagne à développer son activité en tant qu'éducatrice canin.",
+  goals: [
+    '5 nouveaux clients chaque semaine',
+    'Ranker Top 1 sur "éducateur canin bordeaux"',
+    "Automatiser la rédaction d'articles SEO avec l'IA",
+  ],
+  workflow: {
+    intro: "Développement d'agents pour chaque étape du flow (semi-automatisé) :",
+    steps: [
+      'Recherche & récupération',
+      "Création du plan de l'article",
+      "Rédaction de l'article",
+      'Rédaction des balises meta',
+      "Création de l'URL",
+      "Intégration de l'article",
+      'Contextualisation des CTA',
+      'Maillage interne',
+      'Check SEO technique (sitemap, données structurées, priorité de chargement, canonical…)',
+    ],
+  },
+};
 
 export const stack = [
   { group: 'Acquisition', tools: ['Google Ads', 'Meta Ads', 'LinkedIn Ads', 'Microsoft Ads'] },
