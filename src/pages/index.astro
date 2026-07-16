@@ -297,6 +297,12 @@ import { profile, metrics, timeline, beliefs, stack, project } from '../data/con
       // Les clics sur la note (dont le bouton fermer) ne comptent pas comme du spam.
       if (event.target.closest('.metric__spam')) return;
 
+      // Feedback tactile : replay de l'animation press à chaque clic (utile sur mobile).
+      card.classList.remove('is-pressed');
+      void card.offsetWidth;
+      card.classList.add('is-pressed');
+      setTimeout(() => card.classList.remove('is-pressed'), 260);
+
       clicks += 1;
       const msg = messageFor(clicks);
       if (!msg) return;
@@ -594,6 +600,25 @@ import { profile, metrics, timeline, beliefs, stack, project } from '../data/con
   @media (max-width: 780px) {
     .projet__grid {
       grid-template-columns: 1fr;
+    }
+  }
+
+  .metric.is-pressed {
+    animation: metric-press 0.26s var(--ease);
+  }
+
+  @keyframes metric-press {
+    0% {
+      transform: translate(0, 0);
+      box-shadow: var(--lift) var(--lift) 0 var(--ink);
+    }
+    45% {
+      transform: translate(var(--lift), var(--lift));
+      box-shadow: 0 0 0 var(--ink);
+    }
+    100% {
+      transform: translate(0, 0);
+      box-shadow: var(--lift) var(--lift) 0 var(--ink);
     }
   }
 
