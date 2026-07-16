@@ -37,6 +37,15 @@ const { title, description } = Astro.props;
     <meta name="twitter:card" content="summary_large_image" />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="preload" as="image" href="/anthony-roque.webp" />
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-LSV6K94YY1"></script>
+    <script is:inline>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-LSV6K94YY1');
+    </script>
   </head>
   <body>
     <slot />

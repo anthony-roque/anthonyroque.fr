@@ -281,6 +281,8 @@ import { profile, metrics, timeline, beliefs, stack, project } from '../data/con
     return null;
   };
 
+  const coarsePointer = window.matchMedia('(hover: none)').matches;
+
   document.querySelectorAll('.metric').forEach((card) => {
     let clicks = 0;
     let note = null;
@@ -297,11 +299,14 @@ import { profile, metrics, timeline, beliefs, stack, project } from '../data/con
       // Les clics sur la note (dont le bouton fermer) ne comptent pas comme du spam.
       if (event.target.closest('.metric__spam')) return;
 
-      // Feedback tactile : replay de l'animation press à chaque clic (utile sur mobile).
-      card.classList.remove('is-pressed');
-      void card.offsetWidth;
-      card.classList.add('is-pressed');
-      setTimeout(() => card.classList.remove('is-pressed'), 260);
+      // Feedback tactile : replay de l'animation press sur mobile uniquement
+      // (sur desktop, :active suffit et cumuler les deux donne un double rebond).
+      if (coarsePointer) {
+        card.classList.remove('is-pressed');
+        void card.offsetWidth;
+        card.classList.add('is-pressed');
+        setTimeout(() => card.classList.remove('is-pressed'), 260);
+      }
 
       clicks += 1;
       const msg = messageFor(clicks);
