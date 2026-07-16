@@ -1,0 +1,214 @@
+---
+interface Props {
+  title: string;
+  description: string;
+}
+
+const { title, description } = Astro.props;
+---
+
+<!--
+
+   _____                    _     _
+  |_   _|   _    ___  ___  | |__ (_) ___ _ __
+    | || | | |  / _ \/ __| | '_ \| |/ _ \ '_ \
+    | || |_| | |  __/\__ \ | |_) | |  __/ | | |
+    |_| \__,_|  \___||___/ |_.__/|_|\___|_| |_|
+
+                   _                     __
+    ___ _   _ _ __(_) ___ _   ___  __   / /__  ___
+   / __| | | | '__| |/ _ \ | | \ \/ /  / / __|/ _ \
+  | (__| |_| | |  | |  __/ |_| |>  <  / /\__ \  __/
+   \___|\__,_|_|  |_|\___|\__,_/_/\_\/_/ |___/\___|
+
+-->
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={Astro.site} />
+    <meta property="og:type" content="profile" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content="/anthony-roque.webp" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="preload" as="image" href="/anthony-roque.webp" />
+  </head>
+  <body>
+    <slot />
+  </body>
+</html>
+
+<style is:global>
+  :root {
+    --ink: #252525;
+    --ink-soft: #3a3a3a;
+    --paper: #f4f2ed;
+    --white: #ffffff;
+    --yellow: #ffc700;
+    --yellow-deep: #d9a800;
+    --muted: #6d6d6d;
+    --line: 2px solid var(--ink);
+    --lift: 6px;
+    --radius: 14px;
+    --ease: cubic-bezier(0.2, 0.8, 0.3, 1);
+  }
+
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background: var(--paper);
+    background-image: radial-gradient(rgba(37, 37, 37, 0.07) 1px, transparent 1px);
+    background-size: 22px 22px;
+    color: var(--ink);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-size: 17px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1,
+  h2,
+  h3 {
+    line-height: 1.05;
+    letter-spacing: -0.03em;
+    text-transform: uppercase;
+    font-weight: 800;
+  }
+
+  a {
+    color: inherit;
+  }
+
+  ::selection {
+    background: var(--yellow);
+    color: var(--ink);
+  }
+
+  /* --- 3D primitives -------------------------------------------------- */
+
+  .block {
+    background: var(--white);
+    border: var(--line);
+    border-radius: var(--radius);
+    box-shadow: var(--lift) var(--lift) 0 var(--ink);
+  }
+
+  .block--yellow {
+    background: var(--yellow);
+  }
+
+  .block--ink {
+    background: var(--ink);
+    color: var(--white);
+    box-shadow: var(--lift) var(--lift) 0 var(--yellow);
+  }
+
+  .push {
+    transition:
+      transform 0.16s var(--ease),
+      box-shadow 0.16s var(--ease);
+  }
+
+  .push:hover {
+    transform: translate(3px, 3px);
+    box-shadow: 3px 3px 0 var(--ink);
+  }
+
+  .push:active {
+    transform: translate(var(--lift), var(--lift));
+    box-shadow: 0 0 0 var(--ink);
+  }
+
+  .block--ink.push:hover {
+    box-shadow: 3px 3px 0 var(--yellow);
+  }
+
+  .block--ink.push:active {
+    box-shadow: 0 0 0 var(--yellow);
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.85rem 1.4rem;
+    border: var(--line);
+    border-radius: 10px;
+    background: var(--white);
+    box-shadow: 5px 5px 0 var(--ink);
+    font-weight: 700;
+    font-size: 0.95rem;
+    text-decoration: none;
+    cursor: pointer;
+    transition:
+      transform 0.16s var(--ease),
+      box-shadow 0.16s var(--ease);
+  }
+
+  .btn:hover {
+    transform: translate(2px, 2px);
+    box-shadow: 3px 3px 0 var(--ink);
+  }
+
+  .btn:active {
+    transform: translate(5px, 5px);
+    box-shadow: 0 0 0 var(--ink);
+  }
+
+  .btn--primary {
+    background: var(--yellow);
+  }
+
+  .btn:focus-visible,
+  a:focus-visible {
+    outline: 3px solid var(--ink);
+    outline-offset: 3px;
+  }
+
+  .wrap {
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+  }
+
+  section {
+    padding: clamp(3.5rem, 8vw, 6rem) 0;
+  }
+
+  .section-title {
+    font-size: clamp(1.75rem, 4.5vw, 2.6rem);
+    margin-bottom: 2.5rem;
+  }
+
+  .section-title span {
+    background: linear-gradient(transparent 62%, var(--yellow) 62%);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+
+    *,
+    *::before,
+    *::after {
+      transition-duration: 0.01ms !important;
+      animation-duration: 0.01ms !important;
+    }
+  }
+</style>

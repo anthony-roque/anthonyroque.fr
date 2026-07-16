@@ -1,0 +1,687 @@
+---
+import Layout from '../layouts/Layout.astro';
+import MergeGlyph from '../components/MergeGlyph.astro';
+import { profile, metrics, timeline, beliefs, stack } from '../data/content';
+---
+
+<Layout
+  title="Anthony Roque - Growth Marketer à Bordeaux"
+  description="Growth Marketer à Bordeaux. 2M€+ de budget media piloté, 0 à 100k€ d'ARR sur un SaaS B2B, tout ça tout ça, téma la meta desc"
+>
+  <main>
+    <!-- HERO -->
+    <header class="hero">
+      <div class="wrap hero__grid">
+        <div class="hero__text">
+          <h1>Anthony<br />Roque</h1>
+          <p class="hero__tagline">{profile.tagline}</p>
+          <div class="hero__actions">
+            <a class="btn btn--primary" href={profile.linkedin} target="_blank" rel="noopener">
+              Mon LinkedIn ↗
+            </a>
+            <a class="btn" href={`mailto:${profile.email}`}>M'écrire</a>
+          </div>
+        </div>
+
+        <div class="hero__photo">
+          <figure class="photo-frame block block--yellow">
+            <img
+              src={profile.photo}
+              alt="Portrait d'Anthony Roque"
+              width="600"
+              height="600"
+              fetchpriority="high"
+            />
+          </figure>
+        </div>
+      </div>
+    </header>
+
+    <!-- METRICS -->
+    <section id="chiffres" aria-labelledby="chiffres-title">
+      <div class="wrap">
+        <h2 id="chiffres-title" class="section-title"><span>Les plus gros impacts</span></h2>
+        <ul class="metrics">
+          {
+            metrics.map((m) => (
+              <li class="metric block push">
+                {m.visual === 'merge' ? (
+                  <MergeGlyph />
+                ) : (
+                  <p class="metric__value">{m.value}</p>
+                )}
+                <p class="metric__label">{m.label}</p>
+                <p class="metric__detail">{m.detail}</p>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+    </section>
+
+    <!-- TIMELINE -->
+    <section id="parcours" aria-labelledby="parcours-title">
+      <div class="wrap">
+        <h2 id="parcours-title" class="section-title">
+          <span>Le parcours, en une ligne chacun</span>
+        </h2>
+        <ol class="timeline">
+          {
+            timeline.map((job) => (
+              <li class="job block push">
+                <div class="job__head">
+                  <div>
+                    <h3 class="job__company">
+                      {job.company}
+                      {job.current && <em class="job__badge">en cours</em>}
+                    </h3>
+                    <p class="job__role">
+                      {job.role} · {job.context}
+                    </p>
+                  </div>
+                  <p class="job__period">{job.period}</p>
+                </div>
+                <p class="job__punchline">{job.punchline}</p>
+              </li>
+            ))
+          }
+        </ol>
+        <p class="footnote">
+          Le détail poste par poste est dans <a href={profile.cv} download>le CV</a>.
+        </p>
+      </div>
+    </section>
+
+    <!-- BELIEFS -->
+    <section id="convictions" aria-labelledby="convictions-title">
+      <div class="wrap">
+        <h2 id="convictions-title" class="section-title"><span>Trois convictions</span></h2>
+        <ul class="beliefs">
+          {
+            beliefs.map((b, i) => (
+              <li class="belief block block--ink push">
+                <span class="belief__num" aria-hidden="true">
+                  0{i + 1}
+                </span>
+                <h3 class="belief__title">{b.title}</h3>
+                <p class="belief__body">{b.body}</p>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+    </section>
+
+    <!-- STACK -->
+    <section id="stack" aria-labelledby="stack-title">
+      <div class="wrap">
+        <h2 id="stack-title" class="section-title"><span>La boîte à outils</span></h2>
+        <dl class="stack">
+          {
+            stack.map((group) => (
+              <div class="stack__group">
+                <dt class="stack__label">{group.group}</dt>
+                <dd>
+                  <ul class="chips">
+                    {group.tools.map((tool) => (
+                      <li class="chip">{tool}</li>
+                    ))}
+                  </ul>
+                </dd>
+              </div>
+            ))
+          }
+        </dl>
+      </div>
+    </section>
+
+    <!-- ABOUT -->
+    <section id="perso" aria-labelledby="perso-title">
+      <div class="wrap">
+        <h2 id="perso-title" class="section-title"><span>En savoir un peu plus sur moi</span></h2>
+        <div class="about block push">
+          <p class="about__body">
+            J'adore les animaux (j'ai un chat et un chien) et en dehors du boulot j'aime passer du
+            temps à la salle de sport car je suis passionné de bodybuilding. J'ai même concouru en
+            Belgique et en France en 2024 (expérience très fatigante mais j'en suis assez fier).
+            J'adore les randonnées en montagne et avec ma compagne nous avons pour projet d'acquérir
+            un fourgon aménagé pour davantage profiter de ce type de paysages.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- CONTACT -->
+    <section id="contact" aria-labelledby="contact-title">
+      <div class="wrap">
+        <div class="contact block block--yellow">
+          <h2 id="contact-title" class="contact__title">On en parle ?</h2>
+          <p class="contact__body">
+            Je cherche un poste en Growth. Si vous avez besoin de scaler votre activité, mettre en
+            place un système d'acquisition et d'activation de 0 et que vous ne voulez plus raisonner
+            en "campagnes" mais en système, parlons en :)
+          </p>
+          <div class="hero__actions">
+            <a class="btn" href={`mailto:${profile.email}`}>{profile.email}</a>
+            <a class="btn" href={profile.linkedin} target="_blank" rel="noopener">LinkedIn ↗</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="wrap">
+      <p>© {new Date().getFullYear()} Anthony Roque · {profile.location}</p>
+    </div>
+  </footer>
+</Layout>
+
+<script>
+  // Easter egg console (pour les curieux qui ouvrent les devtools).
+  console.log(
+    '%cTu inspectes la console ? On va bien s\'entendre :)',
+    'background:#252525;color:#ffc700;font-weight:700;padding:8px 14px;border-radius:8px;font-size:13px;'
+  );
+
+  // Faux "tracking event" (clin d'œil growth) : petite pastille de log, une fois par event.
+  const tracked = new Set();
+  let trackerLayer = null;
+
+  const track = (name, { once = true } = {}) => {
+    if (once) {
+      if (tracked.has(name)) return;
+      tracked.add(name);
+    }
+
+    if (!trackerLayer) {
+      trackerLayer = document.createElement('div');
+      trackerLayer.className = 'tracker';
+      document.body.appendChild(trackerLayer);
+    }
+
+    const toast = document.createElement('div');
+    toast.className = 'tracker__toast';
+    toast.setAttribute('role', 'status');
+
+    const label = document.createElement('span');
+    label.className = 'tracker__label';
+    label.textContent = 'event tracked';
+
+    const evt = document.createElement('span');
+    evt.className = 'tracker__event';
+    evt.textContent = `${name} ✅`;
+
+    toast.append(label, evt);
+    trackerLayer.appendChild(toast);
+
+    setTimeout(() => {
+      toast.classList.add('is-leaving');
+      setTimeout(() => toast.remove(), 260);
+    }, 2600);
+  };
+
+  // Easter egg : rage-click sur une carte "gros impacts" → note fermable sous la carte.
+  const messageFor = (n) => {
+    if (n >= 10) return 'arrête stp :(';
+    if (n >= 5) return "Le spam n'est pas toléré";
+    return null;
+  };
+
+  document.querySelectorAll('.metric').forEach((card) => {
+    let clicks = 0;
+    let note = null;
+    let shownMsg = null;
+
+    const dismiss = () => {
+      if (note) note.remove();
+      note = null;
+      shownMsg = null;
+      clicks = 0;
+    };
+
+    card.addEventListener('click', (event) => {
+      // Les clics sur la note (dont le bouton fermer) ne comptent pas comme du spam.
+      if (event.target.closest('.metric__spam')) return;
+
+      clicks += 1;
+      const msg = messageFor(clicks);
+      if (!msg) return;
+
+      if (!note) {
+        note = document.createElement('div');
+        note.className = 'metric__spam';
+        note.setAttribute('role', 'status');
+
+        const text = document.createElement('span');
+        text.className = 'metric__spam-text';
+
+        const close = document.createElement('button');
+        close.type = 'button';
+        close.className = 'metric__spam-close';
+        close.setAttribute('aria-label', 'Fermer');
+        close.textContent = '×';
+        close.addEventListener('click', (ev) => {
+          ev.stopPropagation();
+          dismiss();
+        });
+
+        note.append(text, close);
+        card.appendChild(note);
+      }
+
+      // Un nouveau message affiché (apparition ou escalade) déclenche l'event.
+      if (msg !== shownMsg) {
+        note.querySelector('.metric__spam-text').textContent = msg;
+        shownMsg = msg;
+        track('rage_click_detected', { once: false });
+      }
+    });
+  });
+
+  // Scroll jusqu'à la section perso → event de curiosité.
+  const perso = document.getElementById('perso');
+  if (perso && 'IntersectionObserver' in window) {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            track('curiosity_activated');
+            observer.disconnect();
+          }
+        });
+      },
+      { threshold: 0.35 }
+    );
+    observer.observe(perso);
+  }
+</script>
+
+<style>
+  /* HERO */
+  .hero {
+    padding: clamp(3rem, 7vw, 5.5rem) 0 clamp(2rem, 4vw, 3rem);
+  }
+
+  .hero__grid {
+    display: grid;
+    grid-template-columns: 1.35fr 1fr;
+    gap: clamp(2rem, 5vw, 4rem);
+    align-items: center;
+  }
+
+  h1 {
+    font-size: clamp(3.2rem, 9vw, 6rem);
+    margin-bottom: 1.25rem;
+  }
+
+  .hero__tagline {
+    font-size: clamp(1rem, 1.7vw, 1.15rem);
+    max-width: 48ch;
+    color: var(--ink-soft);
+    margin-bottom: 2rem;
+  }
+
+  .hero__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.85rem;
+  }
+
+  .photo-frame {
+    padding: 10px;
+    transform: rotate(2.5deg);
+    transition: transform 0.3s var(--ease);
+  }
+
+  .photo-frame:hover {
+    transform: rotate(0deg);
+  }
+
+  .photo-frame img {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 1;
+    object-fit: cover;
+    object-position: center 22%;
+    border: var(--line);
+    border-radius: 6px;
+  }
+
+  /* METRICS */
+  .metrics {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(215px, 1fr));
+    gap: 1.5rem;
+    list-style: none;
+  }
+
+  .metric {
+    padding: 1.6rem 1.4rem;
+  }
+
+  .metric__value {
+    font-size: clamp(1.9rem, 4vw, 2.5rem);
+    font-weight: 800;
+    letter-spacing: -0.04em;
+    line-height: 1;
+    margin-bottom: 0.6rem;
+  }
+
+  .metric__label {
+    font-weight: 700;
+    font-size: 0.98rem;
+    margin-bottom: 0.35rem;
+  }
+
+  .metric__detail {
+    font-size: 0.85rem;
+    color: var(--muted);
+    line-height: 1.45;
+  }
+
+  :global(.metric__spam) {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.6rem;
+    margin-top: 0.8rem;
+    padding-top: 0.7rem;
+    border-top: 2px dashed var(--ink);
+    animation: spam-pop 0.22s var(--ease);
+  }
+
+  :global(.metric__spam-text) {
+    font-size: 0.82rem;
+    font-weight: 800;
+    letter-spacing: -0.01em;
+    color: var(--yellow-deep);
+  }
+
+  :global(.metric__spam-close) {
+    flex-shrink: 0;
+    width: 1.4rem;
+    height: 1.4rem;
+    display: grid;
+    place-items: center;
+    padding: 0;
+    border: var(--line);
+    border-radius: 999px;
+    background: var(--yellow);
+    color: var(--ink);
+    font-size: 1rem;
+    font-weight: 800;
+    line-height: 1;
+    cursor: pointer;
+  }
+
+  @keyframes spam-pop {
+    from {
+      opacity: 0;
+      transform: translateY(-4px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  :global(.tracker) {
+    position: fixed;
+    right: 1.25rem;
+    bottom: 1.25rem;
+    z-index: 60;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0.6rem;
+    pointer-events: none;
+  }
+
+  :global(.tracker__toast) {
+    display: flex;
+    flex-direction: column;
+    gap: 0.12rem;
+    padding: 0.6rem 0.9rem;
+    background: var(--ink);
+    color: var(--white);
+    border: var(--line);
+    border-radius: 10px;
+    box-shadow: 5px 5px 0 var(--yellow);
+    animation: tracker-in 0.28s var(--ease);
+  }
+
+  :global(.tracker__toast.is-leaving) {
+    animation: tracker-out 0.25s var(--ease) forwards;
+  }
+
+  :global(.tracker__label) {
+    font-size: 0.62rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: #b5b5b5;
+  }
+
+  :global(.tracker__event) {
+    font-family: ui-monospace, 'SF Mono', 'Cascadia Code', Menlo, Consolas, monospace;
+    font-size: 0.82rem;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+  }
+
+  @keyframes tracker-in {
+    from {
+      opacity: 0;
+      transform: translateX(12px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  @keyframes tracker-out {
+    to {
+      opacity: 0;
+      transform: translateX(12px);
+    }
+  }
+
+  /* TIMELINE */
+  .timeline {
+    display: grid;
+    gap: 1.5rem;
+    list-style: none;
+  }
+
+  .job {
+    padding: 1.5rem 1.6rem;
+  }
+
+  .job__head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-bottom: 0.7rem;
+  }
+
+  .job__company {
+    font-size: 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    flex-wrap: wrap;
+  }
+
+  .job__badge {
+    font-style: normal;
+    font-size: 0.68rem;
+    letter-spacing: 0.1em;
+    padding: 0.2rem 0.5rem;
+    border: 2px solid var(--ink);
+    border-radius: 999px;
+    background: var(--yellow);
+  }
+
+  .job__role {
+    font-size: 0.92rem;
+    color: var(--muted);
+    margin-top: 0.3rem;
+  }
+
+  .job__period {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--muted);
+    white-space: nowrap;
+  }
+
+  .job__punchline {
+    font-size: 1.02rem;
+  }
+
+  .footnote {
+    margin-top: 1.75rem;
+    font-size: 0.9rem;
+    color: var(--muted);
+  }
+
+  .footnote a {
+    font-weight: 700;
+    color: var(--ink);
+    text-decoration-thickness: 2px;
+    text-underline-offset: 3px;
+  }
+
+  /* BELIEFS */
+  .beliefs {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 1.75rem;
+    list-style: none;
+  }
+
+  .belief {
+    padding: 1.75rem 1.6rem;
+  }
+
+  .belief__num {
+    display: inline-block;
+    font-size: 0.8rem;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    color: var(--yellow);
+    margin-bottom: 0.9rem;
+  }
+
+  .belief__title {
+    font-size: 1.15rem;
+    margin-bottom: 0.85rem;
+    color: var(--white);
+  }
+
+  .belief__body {
+    font-size: 0.95rem;
+    color: #d5d5d5;
+  }
+
+  /* STACK */
+  .stack {
+    display: grid;
+    gap: 1.75rem;
+  }
+
+  .stack__label {
+    font-size: 0.8rem;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 0.8rem;
+  }
+
+  .chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.65rem;
+    list-style: none;
+  }
+
+  .chip {
+    padding: 0.45rem 0.9rem;
+    background: var(--white);
+    border: var(--line);
+    border-radius: 999px;
+    box-shadow: 3px 3px 0 var(--ink);
+    font-size: 0.88rem;
+    font-weight: 600;
+    cursor: default;
+    transition:
+      transform 0.16s var(--ease),
+      box-shadow 0.16s var(--ease);
+  }
+
+  .chip:hover {
+    transform: translate(1.5px, 1.5px);
+    box-shadow: 1.5px 1.5px 0 var(--ink);
+  }
+
+  .chip:active {
+    transform: translate(3px, 3px);
+    box-shadow: 0 0 0 var(--ink);
+  }
+
+  /* ABOUT */
+  .about {
+    padding: clamp(1.75rem, 4vw, 2.5rem);
+  }
+
+  .about__body {
+    font-size: 1.05rem;
+    line-height: 1.7;
+  }
+
+  /* CONTACT */
+  .contact {
+    padding: clamp(2.25rem, 5vw, 3.5rem);
+  }
+
+  .contact__title {
+    font-size: clamp(2rem, 5vw, 3rem);
+    margin-bottom: 1rem;
+  }
+
+  .contact__body {
+    margin-bottom: 2rem;
+  }
+
+  /* FOOTER */
+  .footer {
+    border-top: var(--line);
+    padding: 2rem 0;
+    font-size: 0.85rem;
+    color: var(--muted);
+  }
+
+  .footer .wrap {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  @media (max-width: 780px) {
+    .hero__grid {
+      grid-template-columns: 1fr;
+    }
+
+    .hero__photo {
+      order: -1;
+      max-width: 260px;
+    }
+  }
+</style>
