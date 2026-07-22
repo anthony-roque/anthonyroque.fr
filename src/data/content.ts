@@ -2,7 +2,7 @@ export const profile = {
   name: 'Anthony Roque',
   role: 'Growth Marketer',
   location: 'Bordeaux',
-  email: 'anthony.roque1906@gmail.com',
+  email: 'hello@anthonyroque.fr',
   phone: '06.82.59.68.42',
   linkedin: 'https://linkedin.com/in/anthony-roque/',
   cv: '/CV-Anthony-Roque.pdf',
@@ -31,6 +31,16 @@ export const timeline = [
     current: true,
     punchline:
       "Lancement de l'acquisition de 0 & travail sur l'activation, rétention et monétisation self-serve.",
+    details: {
+      website: 'https://www.thesales.ninja/',
+      activity: "SaaS d'automatisation d'outreach LinkedIn",
+      sector: 'B2B',
+      position: 'Premier employé marketing',
+      actions: [
+        'Recherche de PMF via Ads Meta — gestion des créas et des campagnes de A à Z',
+        "Travail sur l'acquisition (lancement from scratch), activation, rétention et monétisation self-serve",
+      ],
+    },
   },
   {
     company: 'Yescapa',
@@ -40,6 +50,19 @@ export const timeline = [
     current: true,
     punchline:
       "Scaling de l'acquisition payante et son infrastructure à l'international. De 1M€ de budget en 2022 à +2M€ en 2025.",
+    details: {
+      website: 'https://www.yescapa.fr/',
+      activity: '1ère marketplace de location de véhicules de loisirs en Europe',
+      sector: 'B2C',
+      position: "Rattaché à l'équipe Growth",
+      actions: [
+        "Gestion de +2M€ de budget media pour des campagnes SEA / Social Ads à l'international (FR/ES/IT/PT)",
+        "+25% de leads avec un CPL divisé par 2 sur l'Europe du Sud en 2025",
+        'Consolidation du tracking pour 16 sites internationaux',
+        'Lead sur la restructuration du tracking après la fusion avec Goboony : fusion des datalayer des deux marques',
+        'Collaboration étroite avec les équipes Content pour optimiser les performances des publicités & Dev pour optimiser le tracking',
+      ],
+    },
   },
   {
     company: 'Cdiscount Advertising',
@@ -48,6 +71,17 @@ export const timeline = [
     period: '2021 — 2022',
     punchline:
       'Optimisation des campagnes de produits sponsorisés pour +20 marques e-commerce (gestion + conseil).',
+    details: {
+      website: 'https://www.cdiscountadvertising.com/',
+      activity: 'Régie publicitaire de Cdiscount (Brands)',
+      sector: 'B2B2C',
+      position: "Rattaché à l'équipe Marketing Ops",
+      actions: [
+        'Gestion de campagnes de produits sponsorisés pour +20 marques e-commerce avec un budget media total de +800k€',
+        'Gestion/optimisation de budget à +100k/semaine pendant des périodes fortes (type Black Friday) tout en optimisant le ROAS sur diverses catégories de produits',
+        "Conception et mise en œuvre d'un plan de formation complet pour +30 personnes (Sales & Marketing) : base de connaissance + live sessions + évaluations",
+      ],
+    },
   },
   {
     company: 'Yabawt',
@@ -56,6 +90,16 @@ export const timeline = [
     period: '2019 — 2021',
     punchline:
       'Mise en place d\'infrastructures de croissance pour des entreprises de divers secteurs (paid + SEO).',
+    details: {
+      website: 'https://www.yabawt.com/',
+      activity: 'Agence de marketing à la performance',
+      sector: 'B2B / B2C',
+      actions: [
+        "Scaling de l'activité d'un client de 4 départements à +60 en 2 ans grâce à des campagnes paid optimisées",
+        'ROAS doublé sur 12 mois pour un client e-commerce à budget équivalent',
+        'Création & optimisation de landing pages (CRO) + tracking',
+      ],
+    },
   },
 ];
 

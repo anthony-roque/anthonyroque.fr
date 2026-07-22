@@ -24,15 +24,27 @@ import { profile, metrics, timeline, beliefs, stack, project } from '../data/con
         </div>
 
         <div class="hero__photo">
-          <figure class="photo-frame block block--yellow">
-            <img
-              src={profile.photo}
-              alt="Portrait d'Anthony Roque"
-              width="600"
-              height="600"
-              fetchpriority="high"
-            />
-          </figure>
+          <a
+            class="photo-frame block block--yellow"
+            href={profile.cv}
+            download
+            aria-label="Télécharger mon CV"
+          >
+            <span class="photo-flip">
+              <span class="photo-face photo-face--front">
+                <img
+                  src={profile.photo}
+                  alt="Portrait d'Anthony Roque"
+                  width="600"
+                  height="600"
+                  fetchpriority="high"
+                />
+              </span>
+              <span class="photo-face photo-face--back">
+                <span class="photo-face__text">Clic pour télécharger mon CV</span>
+              </span>
+            </span>
+          </a>
         </div>
       </div>
     </header>
@@ -44,7 +56,7 @@ import { profile, metrics, timeline, beliefs, stack, project } from '../data/con
         <ul class="metrics">
           {
             metrics.map((m) => (
-              <li class="metric block push">
+              <li class="metric block">
                 {m.visual === 'merge' ? (
                   <MergeGlyph />
                 ) : (
@@ -67,28 +79,52 @@ import { profile, metrics, timeline, beliefs, stack, project } from '../data/con
         </h2>
         <ol class="timeline">
           {
-            timeline.map((job) => (
-              <li class="job block push">
-                <div class="job__head">
-                  <div>
-                    <h3 class="job__company">
-                      {job.company}
-                      {job.current && <em class="job__badge">en cours</em>}
-                    </h3>
-                    <p class="job__role">
-                      {job.role} · {job.context}
-                    </p>
+            timeline.map((job, i) => (
+              <li class="job-item">
+                <button
+                  type="button"
+                  class="job block push"
+                  data-job-index={i}
+                  aria-haspopup="dialog"
+                >
+                  <div class="job__head">
+                    <div>
+                      <h3 class="job__company">
+                        {job.company}
+                        {job.current && <em class="job__badge">en cours</em>}
+                      </h3>
+                      <p class="job__role">
+                        {job.role} · {job.context}
+                      </p>
+                    </div>
+                    <p class="job__period">{job.period}</p>
                   </div>
-                  <p class="job__period">{job.period}</p>
-                </div>
-                <p class="job__punchline">{job.punchline}</p>
+                  <p class="job__punchline">{job.punchline}</p>
+                  <span class="job__more" aria-hidden="true">Voir le détail →</span>
+                </button>
               </li>
             ))
           }
         </ol>
-        <p class="footnote">
-          Le détail poste par poste est dans <a href={profile.cv} download>le CV</a>.
-        </p>
+
+        <dialog class="job-modal" id="job-modal" aria-labelledby="job-modal-title">
+          <div class="job-modal__inner">
+            <button type="button" class="job-modal__close" aria-label="Fermer">×</button>
+            <header class="job-modal__head">
+              <h3 id="job-modal-title" class="job-modal__title" />
+              <p class="job-modal__meta" />
+            </header>
+            <dl class="job-modal__facts" />
+            <div class="job-modal__actions-block">
+              <p class="job-modal__actions-title">Actions / projets</p>
+              <ul class="job-modal__actions" />
+            </div>
+          </div>
+        </dialog>
+
+        <script is:inline define:vars={{ timeline }}>
+          window.__timelineData = timeline;
+        </script>
       </div>
     </section>
 
@@ -99,7 +135,7 @@ import { profile, metrics, timeline, beliefs, stack, project } from '../data/con
         <ul class="beliefs">
           {
             beliefs.map((b, i) => (
-              <li class="belief block block--ink push">
+              <li class="belief block block--ink">
                 <span class="belief__num" aria-hidden="true">
                   0{i + 1}
                 </span>
@@ -274,72 +310,119 @@ import { profile, metrics, timeline, beliefs, stack, project } from '../data/con
     }, 2600);
   };
 
-  // Easter egg : rage-click sur une carte "gros impacts" → note fermable sous la carte.
-  const messageFor = (n) => {
-    if (n >= 8) return 'Je suis pas venu ici pour souffrir oké ?';
-    if (n >= 4) return 'No spam, te voilà prévenu(e)';
-    return null;
-  };
+  // Popup détails parcours
+  const jobModal = document.getElementById('job-modal');
+  if (jobModal) {
+    const titleEl = jobModal.querySelector('.job-modal__title');
+    const metaEl = jobModal.querySelector('.job-modal__meta');
+    const factsEl = jobModal.querySelector('.job-modal__facts');
+    const actionsEl = jobModal.querySelector('.job-modal__actions');
+    const closeBtn = jobModal.querySelector('.job-modal__close');
+    const data = window.__timelineData || [];
 
-  const coarsePointer = window.matchMedia('(hover: none)').matches;
+    const openJob = (idx) => {
+      const job = data[idx];
+      if (!job) return;
+      const d = job.details || {};
 
-  document.querySelectorAll('.metric').forEach((card) => {
-    let clicks = 0;
-    let note = null;
-    let shownMsg = null;
+      titleEl.textContent = job.company;
+      metaEl.textContent = `${job.role} · ${job.period}`;
 
-    const dismiss = () => {
-      if (note) note.remove();
-      note = null;
-      shownMsg = null;
-      clicks = 0;
+      const facts = [];
+      if (d.website) {
+        const host = d.website.replace(/^https?:\/\//, '').replace(/\/$/, '');
+        facts.push([
+          'Site internet',
+          `<a href="${d.website}" target="_blank" rel="noopener">${host} ↗</a>`,
+        ]);
+      }
+      if (d.activity) facts.push(['Activité', d.activity]);
+      if (d.sector) facts.push(['Secteur', d.sector]);
+      if (d.position) facts.push(['Poste', d.position]);
+      factsEl.innerHTML = facts
+        .map(([k, v]) => `<div class="job-modal__fact"><dt>${k}</dt><dd>${v}</dd></div>`)
+        .join('');
+
+      actionsEl.innerHTML = (d.actions || [])
+        .map((a) => `<li>${a}</li>`)
+        .join('');
+
+      if (typeof jobModal.showModal === 'function') {
+        jobModal.showModal();
+      } else {
+        jobModal.setAttribute('open', '');
+      }
     };
 
-    card.addEventListener('click', (event) => {
-      // Les clics sur la note (dont le bouton fermer) ne comptent pas comme du spam.
-      if (event.target.closest('.metric__spam')) return;
+    const close = () => {
+      if (typeof jobModal.close === 'function') jobModal.close();
+      else jobModal.removeAttribute('open');
+    };
 
-      // Feedback tactile : replay de l'animation press sur mobile uniquement
-      // (sur desktop, :active suffit et cumuler les deux donne un double rebond).
-      if (coarsePointer) {
-        card.classList.remove('is-pressed');
-        void card.offsetWidth;
-        card.classList.add('is-pressed');
-        setTimeout(() => card.classList.remove('is-pressed'), 260);
+    document.querySelectorAll('[data-job-index]').forEach((btn) => {
+      btn.addEventListener('click', () => openJob(Number(btn.dataset.jobIndex)));
+    });
+
+    closeBtn?.addEventListener('click', close);
+    jobModal.addEventListener('click', (e) => {
+      if (e.target === jobModal) close();
+    });
+  }
+
+  // Photo : flip au clic, retour à l'état initial quand le pointeur s'écarte.
+  const photoFrame = document.querySelector('.photo-frame');
+  if (photoFrame) {
+    photoFrame.addEventListener('click', (event) => {
+      if (!photoFrame.classList.contains('is-flipped')) {
+        event.preventDefault();
+        photoFrame.classList.add('is-flipped');
+      }
+    });
+    photoFrame.addEventListener('mouseleave', () => {
+      photoFrame.classList.remove('is-flipped');
+    });
+  }
+
+  // Clics sur les chips de la stack → toast qui escalade.
+  const chipMessages = [
+    "Je sais que c'est satisfaisant mais c'est pas un bouton",
+    'Toujours pas',
+    'Non plus',
+    'Bon ça suffit maintenant',
+  ];
+  let chipIndex = 0;
+  let chipToast = null;
+  let chipTimer = null;
+
+  document.querySelectorAll('.chip').forEach((chip) => {
+    chip.addEventListener('click', () => {
+      const message = chipMessages[chipIndex % chipMessages.length];
+      chipIndex += 1;
+
+      if (!chipToast) {
+        chipToast = document.createElement('div');
+        chipToast.className = 'chip-toast';
+        chipToast.setAttribute('role', 'status');
+        document.body.appendChild(chipToast);
       }
 
-      clicks += 1;
-      const msg = messageFor(clicks);
-      if (!msg) return;
+      chipToast.textContent = message;
+      chipToast.classList.remove('is-leaving');
+      void chipToast.offsetWidth;
+      chipToast.classList.add('is-visible');
 
-      if (!note) {
-        note = document.createElement('div');
-        note.className = 'metric__spam';
-        note.setAttribute('role', 'status');
-
-        const text = document.createElement('span');
-        text.className = 'metric__spam-text';
-
-        const close = document.createElement('button');
-        close.type = 'button';
-        close.className = 'metric__spam-close';
-        close.setAttribute('aria-label', 'Fermer');
-        close.textContent = '×';
-        close.addEventListener('click', (ev) => {
-          ev.stopPropagation();
-          dismiss();
-        });
-
-        note.append(text, close);
-        card.appendChild(note);
-      }
-
-      // Un nouveau message affiché (apparition ou escalade) déclenche l'event.
-      if (msg !== shownMsg) {
-        note.querySelector('.metric__spam-text').textContent = msg;
-        shownMsg = msg;
-        track('rage_click_detected', { once: false });
-      }
+      if (chipTimer) clearTimeout(chipTimer);
+      chipTimer = setTimeout(() => {
+        if (!chipToast) return;
+        chipToast.classList.add('is-leaving');
+        chipToast.classList.remove('is-visible');
+        setTimeout(() => {
+          if (chipToast) {
+            chipToast.remove();
+            chipToast = null;
+          }
+        }, 260);
+      }, 2400);
     });
   });
 
@@ -393,24 +476,66 @@ import { profile, metrics, timeline, beliefs, stack, project } from '../data/con
   }
 
   .photo-frame {
+    display: block;
     padding: 10px;
     transform: rotate(2.5deg);
     transition: transform 0.3s var(--ease);
+    perspective: 1200px;
+    cursor: pointer;
   }
 
-  .photo-frame:hover {
+  .photo-frame:hover,
+  .photo-frame:focus-visible {
     transform: rotate(0deg);
+  }
+
+  .photo-flip {
+    position: relative;
+    display: block;
+    width: 100%;
+    aspect-ratio: 1;
+    transform-style: preserve-3d;
+    transition: transform 0.6s var(--ease);
+  }
+
+  .photo-frame.is-flipped .photo-flip {
+    transform: rotateY(180deg);
+  }
+
+  .photo-face {
+    position: absolute;
+    inset: 0;
+    display: block;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    border: var(--line);
+    border-radius: 6px;
+    overflow: hidden;
+  }
+
+  .photo-face--back {
+    transform: rotateY(180deg);
+    background: var(--yellow);
+    display: grid;
+    place-items: center;
+    padding: 1.5rem;
+    text-align: center;
+  }
+
+  .photo-face__text {
+    font-size: clamp(1.1rem, 2.2vw, 1.5rem);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+    color: var(--ink);
   }
 
   .photo-frame img {
     display: block;
     width: 100%;
-    height: auto;
-    aspect-ratio: 1;
+    height: 100%;
     object-fit: cover;
     object-position: center 22%;
-    border: var(--line);
-    border-radius: 6px;
   }
 
   /* METRICS */
@@ -443,41 +568,6 @@ import { profile, metrics, timeline, beliefs, stack, project } from '../data/con
     font-size: 0.85rem;
     color: var(--muted);
     line-height: 1.45;
-  }
-
-  :global(.metric__spam) {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 0.6rem;
-    margin-top: 0.8rem;
-    padding-top: 0.7rem;
-    border-top: 2px dashed var(--ink);
-    animation: spam-pop 0.22s var(--ease);
-  }
-
-  :global(.metric__spam-text) {
-    font-size: 0.82rem;
-    font-weight: 800;
-    letter-spacing: -0.01em;
-    color: var(--yellow-deep);
-  }
-
-  :global(.metric__spam-close) {
-    flex-shrink: 0;
-    width: 1.4rem;
-    height: 1.4rem;
-    display: grid;
-    place-items: center;
-    padding: 0;
-    border: var(--line);
-    border-radius: 999px;
-    background: var(--yellow);
-    color: var(--ink);
-    font-size: 1rem;
-    font-weight: 800;
-    line-height: 1;
-    cursor: pointer;
   }
 
   /* PROJECT */
@@ -608,34 +698,38 @@ import { profile, metrics, timeline, beliefs, stack, project } from '../data/con
     }
   }
 
-  .metric.is-pressed {
-    animation: metric-press 0.26s var(--ease);
+  :global(.chip-toast) {
+    position: fixed;
+    left: 50%;
+    bottom: 1.75rem;
+    transform: translate(-50%, 12px);
+    z-index: 70;
+    padding: 0.85rem 1.4rem;
+    background: var(--ink);
+    color: var(--white);
+    border: var(--line);
+    border-radius: 12px;
+    box-shadow: 5px 5px 0 var(--yellow);
+    font-weight: 700;
+    font-size: 0.95rem;
+    letter-spacing: -0.01em;
+    text-align: center;
+    max-width: min(90vw, 32rem);
+    opacity: 0;
+    transition:
+      opacity 0.22s var(--ease),
+      transform 0.22s var(--ease);
+    pointer-events: none;
   }
 
-  @keyframes metric-press {
-    0% {
-      transform: translate(0, 0);
-      box-shadow: var(--lift) var(--lift) 0 var(--ink);
-    }
-    45% {
-      transform: translate(var(--lift), var(--lift));
-      box-shadow: 0 0 0 var(--ink);
-    }
-    100% {
-      transform: translate(0, 0);
-      box-shadow: var(--lift) var(--lift) 0 var(--ink);
-    }
+  :global(.chip-toast.is-visible) {
+    opacity: 1;
+    transform: translate(-50%, 0);
   }
 
-  @keyframes spam-pop {
-    from {
-      opacity: 0;
-      transform: translateY(-4px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
+  :global(.chip-toast.is-leaving) {
+    opacity: 0;
+    transform: translate(-50%, 12px);
   }
 
   :global(.tracker) {
@@ -707,8 +801,169 @@ import { profile, metrics, timeline, beliefs, stack, project } from '../data/con
     list-style: none;
   }
 
+  .job-item {
+    list-style: none;
+  }
+
   .job {
     padding: 1.5rem 1.6rem;
+    width: 100%;
+    display: block;
+    text-align: left;
+    font: inherit;
+    color: inherit;
+    cursor: pointer;
+    position: relative;
+  }
+
+  .job__more {
+    display: inline-block;
+    margin-top: 0.85rem;
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: var(--yellow-deep);
+  }
+
+  /* JOB MODAL */
+  :global(.job-modal) {
+    padding: 0;
+    border: var(--line);
+    border-radius: 14px;
+    background: var(--white);
+    color: var(--ink);
+    box-shadow: 8px 8px 0 var(--ink);
+    max-width: min(640px, 92vw);
+    max-height: 90vh;
+    width: 100%;
+    margin: auto;
+    position: fixed;
+    inset: 0;
+    overflow: auto;
+  }
+
+  :global(.job-modal::backdrop) {
+    background: rgba(0, 0, 0, 0.55);
+  }
+
+  :global(.job-modal__inner) {
+    padding: clamp(1.5rem, 3.5vw, 2.25rem);
+    position: relative;
+  }
+
+  :global(.job-modal__close) {
+    position: absolute;
+    top: 0.75rem;
+    right: 0.75rem;
+    width: 2rem;
+    height: 2rem;
+    display: grid;
+    place-items: center;
+    padding: 0;
+    border: var(--line);
+    border-radius: 999px;
+    background: var(--yellow);
+    color: var(--ink);
+    font-size: 1.2rem;
+    font-weight: 800;
+    line-height: 1;
+    cursor: pointer;
+  }
+
+  :global(.job-modal__head) {
+    margin-bottom: 1.25rem;
+    padding-right: 2.5rem;
+  }
+
+  :global(.job-modal__title) {
+    font-size: clamp(1.4rem, 3vw, 1.75rem);
+    margin-bottom: 0.35rem;
+  }
+
+  :global(.job-modal__meta) {
+    font-size: 0.9rem;
+    color: var(--muted);
+    font-weight: 700;
+  }
+
+  :global(.job-modal__facts) {
+    display: grid;
+    gap: 0.65rem;
+    margin: 0 0 1.5rem;
+    padding: 1rem 1.1rem;
+    background: #fafafa;
+    border: var(--line);
+    border-radius: 10px;
+  }
+
+  :global(.job-modal__fact) {
+    display: grid;
+    grid-template-columns: 130px 1fr;
+    gap: 0.75rem;
+    font-size: 0.9rem;
+    line-height: 1.4;
+  }
+
+  :global(.job-modal__fact dt) {
+    font-weight: 800;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    font-size: 0.72rem;
+    color: var(--muted);
+    align-self: center;
+  }
+
+  :global(.job-modal__fact dd) {
+    margin: 0;
+  }
+
+  :global(.job-modal__fact a) {
+    color: var(--ink);
+    font-weight: 700;
+    text-decoration-thickness: 2px;
+    text-underline-offset: 3px;
+  }
+
+  :global(.job-modal__actions-title) {
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--yellow-deep);
+    margin-bottom: 0.7rem;
+  }
+
+  :global(.job-modal__actions) {
+    display: grid;
+    gap: 0.55rem;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  :global(.job-modal__actions li) {
+    position: relative;
+    padding-left: 1.1rem;
+    font-size: 0.94rem;
+    line-height: 1.5;
+  }
+
+  :global(.job-modal__actions li::before) {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.55rem;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--yellow);
+    border: 2px solid var(--ink);
+  }
+
+  @media (max-width: 520px) {
+    :global(.job-modal__fact) {
+      grid-template-columns: 1fr;
+      gap: 0.15rem;
+    }
   }
 
   .job__head {
