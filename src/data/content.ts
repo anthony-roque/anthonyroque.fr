@@ -13,7 +13,7 @@ export const profile = {
 
 export const metrics = [
   { value: '2M€+', label: 'de budget media piloté', detail: 'SEA & Social Ads, 4 marchés européens' },
-  { value: '0 → 100k€', label: "d'ARR sur un SaaS B2B", detail: 'premier employé marketing' },
+  { value: '0 → +150k€', label: "d'ARR sur un SaaS B2B", detail: 'premier employé marketing' },
   { value: 'CPL ÷ 2', label: 'sur l\'Europe du Sud', detail: 'pour un volume de leads en hausse de 25%' },
   {
     visual: 'merge' as const,
@@ -27,7 +27,7 @@ export const timeline = [
     company: 'The Sales Ninja',
     context: 'B2B SaaS',
     role: 'Growth Marketer',
-    period: '2026 — aujourd\'hui',
+    period: '2026 - aujourd\'hui',
     current: true,
     punchline:
       "Lancement de l'acquisition de 0 & travail sur l'activation, rétention et monétisation self-serve.",
@@ -37,7 +37,7 @@ export const timeline = [
       sector: 'B2B',
       position: 'Premier employé marketing',
       actions: [
-        'Recherche de PMF via Ads Meta — gestion des créas et des campagnes de A à Z',
+        'Recherche de PMF via Ads Meta : gestion des créas et des campagnes de A à Z',
         "Travail sur l'acquisition (lancement from scratch), activation, rétention et monétisation self-serve",
       ],
     },
@@ -46,7 +46,7 @@ export const timeline = [
     company: 'Yescapa',
     context: 'B2C marketplace',
     role: 'Perf. Marketing Manager',
-    period: '2022 — aujourd\'hui',
+    period: '2022 - aujourd\'hui',
     current: true,
     punchline:
       "Scaling de l'acquisition payante et son infrastructure à l'international. De 1M€ de budget en 2022 à +2M€ en 2025.",
@@ -68,7 +68,7 @@ export const timeline = [
     company: 'Cdiscount Advertising',
     context: 'B2B2C retail media',
     role: 'Traffic Manager',
-    period: '2021 — 2022',
+    period: '2021 - 2022',
     punchline:
       'Optimisation des campagnes de produits sponsorisés pour +20 marques e-commerce (gestion + conseil).',
     details: {
@@ -87,7 +87,7 @@ export const timeline = [
     company: 'Yabawt',
     context: 'Agence B2B / B2C',
     role: 'Performance Marketing Consultant',
-    period: '2019 — 2021',
+    period: '2019 - 2021',
     punchline:
       'Mise en place d\'infrastructures de croissance pour des entreprises de divers secteurs (paid + SEO).',
     details: {
