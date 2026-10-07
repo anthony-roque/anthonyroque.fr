@@ -153,10 +153,32 @@ export const project = {
   },
 };
 
+export const process = {
+  title: 'Comment je travaille ?',
+  steps: [
+    {
+      title: "Réalisation d'un audit",
+      body: "Si vous avez déjà des campagnes d'acquisition, j'analyse toute votre structure, vos cibles, vos créas vos landing pages et votre tracking. Si vous n'avez pas encore de campagnes, j'analyse votre marché et/ou votre niche ainsi que votre tracking pour établir une roadmap.",
+    },
+    {
+      title: 'Stratégie et roadmap',
+      body: "Suite à l'audit, je vous propose une stratégie sur le principe de quick wins pour générer des clients et du revenu rapidement. Je vous propose ensuite une roadmap sur 6 à 12 mois.",
+    },
+    {
+      title: 'Exécution',
+      body: "On applique ensemble toutes les recos et les actions de la roadmap : tracking, media buying, landing pages, briefs créas, reporting et suivi. Rien n'est laissé au hasard.",
+    },
+    {
+      title: 'Analyse et itérations',
+      body: "Je fais en sorte d'avoir une routine de tests afin d'améliorer en permanence les performances des actions mises en place. L'objectif est de vous permettre de répondre à vos enjeux business en ayant un processus d'expérimentation constant.",
+    },
+  ],
+};
+
 export const stack = [
   { group: 'Acquisition', tools: ['Google Ads', 'Meta Ads', 'LinkedIn Ads', 'Microsoft Ads'] },
   { group: 'Data & analytics', tools: ['GTM', 'GA4', 'PostHog', 'Hotjar', 'Looker Studio'] },
   { group: 'SEO', tools: ['Ahrefs', 'SEMrush', 'Search Console'] },
   { group: 'Build & automatisation', tools: ['Claude Code', 'GitHub', 'Netlify', 'Zapier'] },
-  { group: 'Créa & IA', tools: ['Higgsfield', 'Arcads', 'Holo.ai', 'Remotion', 'Hyperframe'] },
+  { group: 'Créa & IA', tools: ['Higgsfield', 'Arcads', 'Holo.ai', 'Remotion', 'Hyperframe', 'CapCut'] },
 ];
