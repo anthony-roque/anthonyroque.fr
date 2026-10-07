@@ -67,6 +67,7 @@ export const timeline = [
       actions: [
         "Gestion de +2M€ de budget media pour des campagnes SEA / Social Ads à l'international (FR/ES/IT/PT)",
         "+25% de leads avec un CPL divisé par 2 sur l'Europe du Sud en 2025",
+        "Mise en place de tests d'incrémentalité (lift studies) et analyse de performances via un MMM",
         'Consolidation du tracking pour 16 sites internationaux',
         'Lead sur la restructuration du tracking après la fusion avec Goboony : fusion des datalayer des deux marques',
         'Collaboration étroite avec les équipes Content pour optimiser les performances des publicités & Dev pour optimiser le tracking',
@@ -158,7 +159,7 @@ export const process = {
   steps: [
     {
       title: "Réalisation d'un audit",
-      body: "Si vous avez déjà des campagnes d'acquisition, j'analyse toute votre structure, vos cibles, vos créas vos landing pages et votre tracking. Si vous n'avez pas encore de campagnes, j'analyse votre marché et/ou votre niche ainsi que votre tracking pour établir une roadmap.",
+      body: "Si vous avez déjà des campagnes d'acquisition, j'analyse toute votre structure, vos cibles, vos créas, vos landing pages et votre tracking. Si vous n'avez pas encore de campagnes, j'analyse votre marché et/ou votre niche ainsi que votre tracking pour établir une roadmap.",
     },
     {
       title: 'Stratégie et roadmap',
