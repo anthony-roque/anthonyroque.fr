@@ -13,7 +13,7 @@ export const profile = {
 
 export const metrics = [
   { value: '2M€+', label: 'de budget media piloté', detail: 'SEA & Social Ads, 4 marchés européens' },
-  { value: '0 → +150k€', label: "d'ARR sur un SaaS B2B", detail: 'premier employé marketing' },
+  { value: '0 → +200k$', label: "d'ARR sur un SaaS B2B", detail: 'premier employé marketing' },
   { value: 'CPL ÷ 2', label: 'sur l\'Europe du Sud', detail: 'pour un volume de leads en hausse de 25%' },
   {
     visual: 'merge' as const,
@@ -37,9 +37,18 @@ export const timeline = [
       sector: 'B2B',
       position: 'Premier employé marketing',
       actions: [
+        "Lancement de l'acquisition payante from scratch",
         'Recherche de PMF via Ads Meta : gestion des créas et des campagnes de A à Z',
         "Travail sur l'acquisition (lancement from scratch), activation, rétention et monétisation self-serve",
       ],
+      chart: {
+        title: 'ARR',
+        caption: '0 → +200k$ en tant que premier employé marketing',
+        unit: '$',
+        scale: 'k',
+        points: [0, 12, 28, 45, 78, 120, 165, 200],
+        labels: ['T1', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7', 'T8'],
+      },
     },
   },
   {
