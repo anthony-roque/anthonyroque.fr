@@ -2,9 +2,12 @@
 interface Props {
   title: string;
   description: string;
+  canonical?: string;
+  noindex?: boolean;
 }
 
-const { title, description } = Astro.props;
+const { title, description, canonical, noindex = false } = Astro.props;
+const canonicalUrl = canonical ? new URL(canonical, Astro.site).href : String(Astro.site);
 ---
 
 <!--
@@ -29,7 +32,8 @@ const { title, description } = Astro.props;
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{title}</title>
     <meta name="description" content={description} />
-    <link rel="canonical" href={Astro.site} />
+    <link rel="canonical" href={canonicalUrl} />
+    {noindex && <meta name="robots" content="noindex, nofollow" />}
     <meta property="og:type" content="profile" />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />

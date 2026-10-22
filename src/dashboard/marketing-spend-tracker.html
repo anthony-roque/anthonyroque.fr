@@ -1,0 +1,1092 @@
+<style>
+.mst{display:flex;flex-direction:column;gap:var(--cds-gap-lg);font-family:var(--font-anthropic-sans)}
+.mst-head{display:flex;flex-wrap:wrap;gap:var(--cds-gap-md);align-items:flex-end;justify-content:space-between}
+.mst-title{font-family:var(--font-anthropic-serif);font-weight:400;font-size:var(--cds-font-size-title);margin:0}
+.mst-sub{color:var(--color-fg-muted);font-size:var(--cds-font-size-caption);margin:var(--cds-gap-xs) 0 0;font-variant-numeric:tabular-nums}
+.mst-take{font-size:var(--cds-font-size-body);margin:0;max-width:62rem;line-height:1.5}
+.mst-ctrl{display:flex;gap:var(--cds-gap-sm);align-items:center;font-size:var(--cds-font-size-caption);color:var(--color-fg-muted)}
+.mst select{font:inherit;color:var(--color-fg);background:var(--color-panel);border:1px solid var(--color-border-line);border-radius:var(--cds-radius);padding:var(--cds-pad-xs) var(--cds-pad-sm)}
+.mst-tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,11rem),1fr));gap:var(--cds-gap-md)}
+.mst-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,28rem),1fr));gap:var(--cds-gap-md)}
+.mst-card{background:var(--color-panel);border:1px solid var(--color-border-line);border-radius:var(--cds-radius);padding:var(--cds-pad-lg);min-width:0}
+.mst-tile-label{font-size:var(--cds-font-size-caption);color:var(--color-fg-muted)}
+.mst-tile-val{font-family:var(--font-anthropic-serif);font-weight:400;font-size:var(--cds-font-size-title);font-variant-numeric:tabular-nums;margin-top:var(--cds-gap-xs);min-height:1.3em}
+.mst-tile-note{font-size:var(--cds-font-size-caption);color:var(--color-fg-muted);margin-top:var(--cds-gap-xs);font-variant-numeric:tabular-nums}
+.mst h2{font-size:var(--cds-font-size-heading);font-weight:var(--cds-font-weight-medium);margin:0}
+.mst-section{display:flex;flex-direction:column;gap:var(--cds-gap-md)}
+.mst-note{font-size:var(--cds-font-size-caption);color:var(--color-fg-muted);margin:var(--cds-gap-xs) 0 var(--cds-gap-md)}
+.mst-scroll{overflow-x:auto}
+.mst table{width:100%;border-collapse:collapse;font-size:var(--cds-font-size-caption);font-variant-numeric:tabular-nums}
+.mst th{text-align:right;font-weight:var(--cds-font-weight-medium);color:var(--color-fg-muted);padding:var(--cds-pad-xs) var(--cds-pad-sm);border-bottom:1px solid var(--color-border-line);white-space:nowrap}
+.mst td{text-align:right;padding:var(--cds-pad-xs) var(--cds-pad-sm);border-bottom:1px solid var(--color-border-line);white-space:nowrap}
+.mst th:first-child,.mst td:first-child{text-align:left}
+.mst tr.mst-total td{font-weight:var(--cds-font-weight-medium);border-bottom:none;border-top:1px solid var(--color-fg-muted)}
+.mst .is-bad{color:var(--color-bad)}
+.mst td.mst-status{text-align:left}
+.mst td.mst-spark{text-align:left;padding-top:2px;padding-bottom:2px}
+.mst td.mst-spark svg{display:inline-block;vertical-align:middle}
+.mst td.mst-spark rect[data-tip-h]{cursor:pointer}
+.mst .mst-spark-tip{position:absolute;z-index:5}
+.mst .mst-status.is-ok{color:var(--color-ok)}
+.mst .mst-status.is-warn{color:var(--color-warn)}
+.mst .is-ok{color:var(--color-ok)}
+.mst-chart{position:relative;min-height:340px}
+.mst-tip{position:absolute;pointer-events:none;background:var(--cds-surface-popover);border:1px solid var(--cds-border);border-radius:var(--cds-radius);box-shadow:var(--cds-shadow-popover);padding:var(--cds-pad-xs) var(--cds-pad-sm);font-size:var(--cds-font-size-caption);font-variant-numeric:tabular-nums;white-space:nowrap;display:none;z-index:2}
+.mst-tip-h{color:var(--cds-text-secondary);margin-bottom:2px}
+.mst-legend{display:flex;flex-wrap:wrap;gap:var(--cds-gap-md);font-size:var(--cds-font-size-caption);color:var(--color-fg-muted);margin-bottom:var(--cds-gap-sm)}
+.mst-sw{display:inline-block;width:.6rem;height:.6rem;border-radius:2px;margin-right:6px;vertical-align:middle}
+.mst-pills{display:flex;flex-wrap:wrap;gap:var(--cds-gap-xs)}
+.mst-pill{font:inherit;font-size:var(--cds-font-size-caption);color:var(--color-fg);background:transparent;border:1px solid var(--color-border-line);border-radius:999px;padding:2px 10px;cursor:pointer}
+.mst-pill[aria-pressed=true]{background:var(--color-fg);color:var(--color-bg);border-color:var(--color-fg)}
+.mst-fail{display:flex;align-items:center;justify-content:center;gap:var(--cds-gap-xs);color:var(--color-fg-muted);font-size:var(--cds-font-size-caption);min-height:6rem}
+.mst-fail::before{content:"";width:.375rem;height:.375rem;border-radius:50%;background:var(--color-bad)}
+.mst [data-dash-source-state=empty]{color:transparent}
+.mst [data-dash-source-state=refreshing]{opacity:.5;transition:opacity var(--cds-dur-slow)}
+.mst-pace-ctrls{display:flex;flex-wrap:wrap;gap:var(--cds-gap-md);align-items:center}
+.mst-toggle{display:inline-flex;gap:6px;align-items:center;font-size:var(--cds-font-size-caption);color:var(--color-fg-muted);cursor:pointer}
+.mst-pace-head{display:flex;flex-wrap:wrap;gap:var(--cds-gap-md);justify-content:space-between;align-items:flex-start}
+.mst-pace-title{font-size:var(--cds-font-size-body);font-weight:var(--cds-font-weight-medium)}
+.mst-pace-sum{font-size:var(--cds-font-size-caption);color:var(--color-fg-muted);margin:var(--cds-gap-xs) 0 var(--cds-gap-sm);font-variant-numeric:tabular-nums;min-height:1.4em}
+.mst-pace-sum b{color:var(--color-fg)}
+.mst .mst-pace-chart{min-height:280px}
+.mst-pace-sum + .mst-pace-sum{margin-top:0}
+.mst-attn-list{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:var(--cds-gap-sm);font-size:var(--cds-font-size-body);line-height:1.45;min-height:3rem}
+.mst-attn-list li{display:flex;gap:var(--cds-gap-sm);align-items:baseline}
+.mst-attn-list li::before{content:"";flex:none;width:.5rem;height:.5rem;border-radius:50%;background:var(--color-fg-muted);transform:translateY(-1px)}
+.mst-attn-list li.sev-1::before{background:var(--cds-chart-status-critical)}
+.mst-attn-list li.sev-2::before{background:var(--color-warn)}
+.mst-attn-list li.sev-4::before{background:var(--color-ok)}
+.mst-attn-list b{font-weight:var(--cds-font-weight-medium)}
+.mst-foot{font-size:var(--cds-font-size-caption);color:var(--color-fg-muted);line-height:1.5;margin:0}
+@media (max-width:640px){.mst .mst-wide{display:none}}
+</style>
+
+<div class="mst">
+  <header class="mst-head" id="top">
+    <div>
+      <h1 class="mst-title">Marketing spend tracker</h1>
+      <p class="mst-sub"><span class="mst-period">End-of-month projection</span> · data through <span class="mst-through dash-skeleton" data-source="country_month" data-field="data_through" data-row="0">—</span> · day <span class="mst-elapsed" data-source="country_month" data-field="days_elapsed" data-row="0">—</span> of <span class="mst-dim" data-source="country_month" data-field="days_in_month" data-row="0">—</span></p>
+    </div>
+    <label class="mst-ctrl">Month <select class="mst-month" aria-label="Month"></select></label>
+  </header>
+
+  <p class="mst-take" id="takeaway">
+    <span class="mst-take-a dash-skeleton">—</span>
+  </p>
+
+  <div class="mst-card mst-attn" id="attention">
+    <h2>Attention points</h2>
+    <p class="mst-note">What stands out this month, worked out from the figures below.</p>
+    <ul class="mst-attn-list dash-skeleton" data-source="attention_points"></ul>
+  </div>
+
+  <section class="mst-section" id="travellers">
+    <h2>Travellers</h2>
+    <div class="mst-tiles">
+      <div class="mst-card" id="tile-cost">
+        <div class="mst-tile-label">Costs vs target</div>
+        <div class="mst-tile-val"><span class="dash-skeleton" data-t="cost_pct" data-source="traveller_overview" data-field="cost_pct" data-where="country=TOTAL">—</span></div>
+        <div class="mst-tile-note"><span data-t="cost_eom" data-source="traveller_overview" data-field="cost_eom" data-where="country=TOTAL">—</span> of <span data-t="cost_target" data-source="traveller_overview" data-field="cost_target" data-where="country=TOTAL">—</span></div>
+      </div>
+      <div class="mst-card" id="tile-rev">
+        <div class="mst-tile-label">Rental revenue vs target</div>
+        <div class="mst-tile-val"><span class="dash-skeleton" data-t="rev_pct" data-source="traveller_overview" data-field="rev_pct" data-where="country=TOTAL">—</span></div>
+        <div class="mst-tile-note"><span data-t="rev_eom" data-source="traveller_overview" data-field="rev_eom" data-where="country=TOTAL">—</span> of <span data-t="rev_target" data-source="traveller_overview" data-field="rev_target" data-where="country=TOTAL">—</span></div>
+      </div>
+      <div class="mst-card" id="tile-net">
+        <div class="mst-tile-label">Net revenue vs target</div>
+        <div class="mst-tile-val"><span class="dash-skeleton" data-t="net_pct" data-source="traveller_overview" data-field="net_pct" data-where="country=TOTAL">—</span></div>
+        <div class="mst-tile-note"><span data-t="net_delta" data-source="traveller_overview" data-field="net_delta" data-where="country=TOTAL">—</span> vs target</div>
+      </div>
+      <div class="mst-card" id="tile-ratio">
+        <div class="mst-tile-label">Cost ratio (cost ÷ revenue)</div>
+        <div class="mst-tile-val"><span class="dash-skeleton" data-t="ratio_eom" data-source="traveller_overview" data-field="ratio_eom" data-where="country=TOTAL">—</span></div>
+        <div class="mst-tile-note">target <span data-t="ratio_target" data-source="traveller_overview" data-field="ratio_target" data-where="country=TOTAL">—</span></div>
+      </div>
+    </div>
+
+    <div class="mst-card" id="pacing">
+      <div class="mst-pace-head">
+        <div>
+          <h2>Pacing during the month</h2>
+          <p class="mst-note mst-ytd-only" hidden style="margin:0">Year to date is picked above, so this shows the current month.</p>
+          <p class="mst-note" style="margin-bottom:0">Running total as a share of the month's target, so revenue and costs share one scale. The dashed line is the target pace (the target spread evenly over the month). Dotted lines extend today's run rate to month end. The faint lines show last year: the share of the same month's total that was in by each day, so you can see if the month is front or back loaded.</p>
+        </div>
+        <div class="mst-pace-ctrls">
+          <label class="mst-toggle"><input type="checkbox" class="mst-ly-toggle" checked> Show last year</label>
+          <div class="mst-pills mst-pace-pills" role="group" aria-label="Pacing country"></div>
+        </div>
+      </div>
+      <div class="mst-legend" style="margin-top:var(--cds-gap-md)"><span><i class="mst-sw mst-sw-1"></i>Rental revenue</span><span><i class="mst-sw mst-sw-0"></i>Traveller costs</span><span>- - Target pace</span><span class="mst-ly-legend"><i class="mst-sw mst-sw-1" style="opacity:.35"></i><i class="mst-sw mst-sw-0" style="opacity:.35"></i>Last year</span></div>
+      <div class="mst-pace-sum" data-k="rev"></div>
+      <div class="mst-pace-sum" data-k="cost"></div>
+      <div class="mst-chart mst-pace-chart dash-skeleton" id="pace-chart" data-source="daily_pacing"><div class="mst-tip"></div></div>
+    </div>
+
+    <div class="mst-card" id="ratio-pacing">
+      <div class="mst-pace-head">
+        <div>
+          <h2>Cost ratio during the month</h2>
+          <p class="mst-note mst-ytd-only" hidden style="margin:0">Year to date is picked above, so this shows the current month.</p>
+          <p class="mst-note" style="margin-bottom:0">Traveller costs ÷ rental revenue. The line is the running ratio for the month so far, dots are single days, the dashed line is the target ratio. Lower is better.</p>
+        </div>
+        <div class="mst-pills mst-ratio-pills" role="group" aria-label="Ratio country"></div>
+      </div>
+      <div class="mst-legend" style="margin-top:var(--cds-gap-md)"><span><i class="mst-sw mst-sw-r"></i>Running ratio</span><span><i class="mst-sw mst-sw-r" style="opacity:.45;border-radius:50%"></i>Single day</span><span>- - Target</span><span class="mst-ly-legend"><i class="mst-sw mst-sw-r" style="opacity:.3"></i>Last year</span></div>
+      <div class="mst-pace-sum mst-ratio-sum"></div>
+      <div class="mst-chart mst-pace-chart dash-skeleton" id="ratio-chart" data-source="daily_pacing"><div class="mst-tip"></div></div>
+    </div>
+
+    <div class="mst-grid">
+      <div class="mst-card" id="chart-countries">
+        <h2>Costs and revenue vs target, by country</h2>
+        <p class="mst-note">End-of-month projection as a share of the month's target. Past 100% is over target.</p>
+        <div class="mst-legend"><span><i class="mst-sw mst-sw-0"></i>Costs</span><span><i class="mst-sw mst-sw-1"></i>Rental revenue</span></div>
+        <div class="mst-chart dash-skeleton" data-source="traveller_overview"><div class="mst-tip"></div></div>
+      </div>
+      <div class="mst-card" id="table-travellers">
+        <h2>Per country</h2>
+        <p class="mst-note">Net revenue is rental revenue minus traveller costs.</p>
+        <div class="mst-scroll">
+          <table class="mst-ttable" data-source="traveller_overview" data-row-key="country">
+            <thead><tr>
+              <th data-field="country">Country</th>
+              <th data-field="cost_eom" class="mst-wide">Costs EoM</th>
+              <th data-field="cost_pct">Costs %</th>
+              <th data-field="rev_pct">Revenue %</th>
+              <th data-field="net_pct">Net rev %</th>
+              <th data-field="net_delta">Δ net rev</th>
+              <th data-field="ratio_eom">Ratio</th>
+              <th data-field="ratio_target">Target ratio</th>
+            </tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="mst-card" id="table-channels">
+      <h2>Channel pacing</h2>
+      <p class="mst-note mst-ytd-only" hidden style="margin:0">Year to date is picked above, so this shows the current month.</p>
+      <p class="mst-note">Spend so far, projection and what is left per day to land on the channel target, next to the average daily spend of the last 7 days. “Last 7 days” shows the spend per day as bars (hover or click a bar for the amount), with the dashed line at what is left per day to land on target. “vs week before” compares the 7-day average with the 7-day average a week earlier. “Adjusting?” compares the 7-day average with what is left per day: On pace (within 10%), Cutting (more than 10% too high, but down at least 10% on the week), Too high (more than 10% too high and not coming down), Room to spend (more than 10% below) or Over budget (nothing left). Channel targets use the planned channel split. All adds up the eight countries per channel.</p>
+      <div class="mst-pills" role="group" aria-label="Country"></div>
+      <div class="mst-scroll" style="margin-top:var(--cds-gap-md)">
+        <table class="mst-ctable" data-source="channel_pacing" data-row-key="country,channel">
+          <thead><tr>
+            <th data-field="channel">Channel</th>
+            <th data-field="target">Target</th>
+            <th data-field="mtd">Spent</th>
+            <th data-field="eom">Projection EoM</th>
+            <th data-field="pct">% of target</th>
+            <th data-field="remaining" class="mst-wide">Remaining</th>
+            <th data-field="per_day">Per day to target</th>
+            <th data-field="avg_7d">7d avg per day</th>
+            <th data-field="wk">vs week before</th>
+            <th data-field="last7" style="text-align:left">Last 7 days</th>
+            <th data-field="status" style="text-align:left">Adjusting?</th>
+          </tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section class="mst-section" id="advertisers">
+    <h2>Advertisers</h2>
+    <div class="mst-card" id="table-advertisers">
+      <h2>Leads and cost per lead</h2>
+      <p class="mst-note">Owner leads projected to month end against the lead target. Advertiser cost targets are 0 for this year, so CPL target shows €0.</p>
+      <div class="mst-scroll">
+        <table class="mst-atable" data-source="advertiser_overview" data-row-key="country">
+          <thead><tr>
+            <th data-field="country">Country</th>
+            <th data-field="leads_mtd" class="mst-wide">Leads so far</th>
+            <th data-field="leads_eom">Leads EoM</th>
+            <th data-field="leads_target">Lead target</th>
+            <th data-field="leads_pct">Leads %</th>
+            <th data-field="cost_eom">Costs EoM</th>
+            <th data-field="cpl_eom">CPL EoM</th>
+            <th data-field="cpl_target">Target CPL</th>
+          </tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <p class="mst-foot" id="notes">Projection is month-to-date divided by days with data, times days in the month. DE is the .de site only. Spend is summed as the ad platforms report it, so UK spend may be in GBP. This page is a frozen snapshot, so nothing on it refreshes.</p>
+</div>
+
+<script>
+
+dash.calc('traveller_overview', {
+  inputs: ['country_month', 'targets'],
+  title: 'Travellers vs target',
+  description: 'End-of-month projection per country against that month’s targets, plus a TOTAL row.',
+  fn: (country_month, targets) => {
+    if (!country_month.length) return [];
+    const month = country_month[0].month;
+    const monthTo = country_month[0].month_to || month;
+    const sumT = (c) => targets.filter((r) => r.month >= month && r.month <= monthTo && r.country === c).reduce((s, r) => {
+      for (const k of ['rental_revenue', 'traveller_cost', 'net_revenue', 'advertiser_cost', 'advertiser_leads']) s[k] = (s[k] || 0) + (Number(r[k]) || 0);
+      return s;
+    }, {});
+    const order = ['FR', 'NL', 'ES', 'UK', 'BE', 'IT', 'PT', 'DE'];
+    const div = (a, b) => (b ? a / b : null);
+    const base = order.map((c) => {
+      const a = country_month.find((r) => r.country === c) || {};
+      const t = sumT(c);
+      return {
+        country: c,
+        cost_eom: Number(a.traveller_cost_eom) || 0,
+        cost_target: Number(t.traveller_cost) || 0,
+        rev_eom: Number(a.rental_revenue_eom) || 0,
+        rev_target: Number(t.rental_revenue) || 0,
+        net_target: Number(t.net_revenue) || 0,
+      };
+    });
+    const total = { country: 'TOTAL', cost_eom: 0, cost_target: 0, rev_eom: 0, rev_target: 0, net_target: 0 };
+    for (const r of base) for (const k of ['cost_eom', 'cost_target', 'rev_eom', 'rev_target', 'net_target']) total[k] += r[k];
+    return [...base, total].map((r) => {
+      const net_eom = r.rev_eom - r.cost_eom;
+      return {
+        country: r.country,
+        cost_eom: r.cost_eom,
+        cost_target: r.cost_target,
+        cost_pct: div(r.cost_eom, r.cost_target),
+        rev_eom: r.rev_eom,
+        rev_target: r.rev_target,
+        rev_pct: div(r.rev_eom, r.rev_target),
+        net_eom,
+        net_target: r.net_target,
+        net_pct: div(net_eom, r.net_target),
+        net_delta: net_eom - r.net_target,
+        ratio_eom: div(r.cost_eom, r.rev_eom),
+        ratio_target: div(r.cost_target, r.rev_target),
+      };
+    });
+  },
+});
+
+dash.calc('advertiser_overview', {
+  inputs: ['country_month', 'targets'],
+  title: 'Advertisers vs target',
+  description: 'Projected owner leads and cost per lead per country against that month’s targets, plus a TOTAL row.',
+  fn: (country_month, targets) => {
+    if (!country_month.length) return [];
+    const month = country_month[0].month;
+    const monthTo = country_month[0].month_to || month;
+    const sumT = (c) => targets.filter((r) => r.month >= month && r.month <= monthTo && r.country === c).reduce((s, r) => {
+      for (const k of ['rental_revenue', 'traveller_cost', 'net_revenue', 'advertiser_cost', 'advertiser_leads']) s[k] = (s[k] || 0) + (Number(r[k]) || 0);
+      return s;
+    }, {});
+    const order = ['FR', 'NL', 'ES', 'UK', 'BE', 'IT', 'PT', 'DE'];
+    const div = (a, b) => (b ? a / b : null);
+    const base = order.map((c) => {
+      const a = country_month.find((r) => r.country === c) || {};
+      const t = sumT(c);
+      return {
+        country: c,
+        leads_mtd: Number(a.leads_mtd) || 0,
+        leads_eom: Number(a.leads_eom) || 0,
+        leads_target: Number(t.advertiser_leads) || 0,
+        cost_eom: Number(a.advertiser_cost_eom) || 0,
+        cost_target: Number(t.advertiser_cost) || 0,
+      };
+    });
+    const total = { country: 'TOTAL', leads_mtd: 0, leads_eom: 0, leads_target: 0, cost_eom: 0, cost_target: 0 };
+    for (const r of base) for (const k of ['leads_mtd', 'leads_eom', 'leads_target', 'cost_eom', 'cost_target']) total[k] += r[k];
+    return [...base, total].map((r) => ({
+      ...r,
+      leads_pct: div(r.leads_eom, r.leads_target),
+      cpl_eom: r.leads_eom ? r.cost_eom / r.leads_eom : 0,
+      cpl_target: r.leads_target ? r.cost_target / r.leads_target : 0,
+    }));
+  },
+});
+
+dash.calc('channel_pacing', {
+  inputs: ['channel_month', 'channel_split', 'targets'],
+  title: 'Traveller channel pacing',
+  description: 'Per country and channel, plus ALL (the eight countries summed per channel): target (split share × country cost target), spend so far, projection, spend left per remaining day and the average daily spend over the last 7 days.',
+  fn: (channel_month, channel_split, targets) => {
+    if (!channel_month.length) return [];
+    const month = channel_month[0].month;
+    const daysLeft = Number(channel_month[0].days_in_month) - Number(channel_month[0].days_elapsed);
+    const order = ['FR', 'NL', 'ES', 'UK', 'BE', 'IT', 'PT', 'DE'];
+    const out = [];
+    for (const c of order) {
+      const t = targets.find((r) => r.month === month && r.country === c) || {};
+      const budget = Number(t.traveller_cost) || 0;
+      const channels = new Set([
+        ...channel_split.filter((r) => r.country === c && Number(r.share) > 0).map((r) => r.channel),
+        ...channel_month.filter((r) => r.country === c).map((r) => r.channel),
+      ]);
+      const rows = [...channels].map((ch) => {
+        const s = channel_split.find((r) => r.country === c && r.channel === ch);
+        const a = channel_month.find((r) => r.country === c && r.channel === ch) || {};
+        return { country: c, channel: ch, target: (s ? Number(s.share) : 0) * budget, mtd: Number(a.traveller_cost_mtd) || 0, eom: Number(a.traveller_cost_eom) || 0, avg_7d: Number(a.avg_daily_7d) || 0 };
+      }).sort((x, y) => y.target - x.target || y.mtd - x.mtd);
+      const tot = { country: c, channel: 'Total', target: 0, mtd: 0, eom: 0, avg_7d: 0 };
+      for (const r of rows) { tot.target += r.target; tot.mtd += r.mtd; tot.eom += r.eom; tot.avg_7d += r.avg_7d; }
+      for (const r of [...rows, tot]) {
+        const remaining = r.target - r.mtd;
+        out.push({ ...r, pct: r.target ? r.eom / r.target : null, remaining, per_day: daysLeft > 0 ? remaining / daysLeft : null });
+      }
+    }
+    const all = new Map();
+    for (const r of out) {
+      if (!all.has(r.channel)) all.set(r.channel, { country: 'ALL', channel: r.channel, target: 0, mtd: 0, eom: 0, avg_7d: 0 });
+      const t = all.get(r.channel);
+      t.target += r.target; t.mtd += r.mtd; t.eom += r.eom; t.avg_7d += r.avg_7d;
+    }
+    const allRows = [...all.values()].filter((r) => r.channel !== 'Total').sort((x, y) => y.target - x.target || y.mtd - x.mtd);
+    if (all.has('Total')) allRows.push(all.get('Total'));
+    for (const r of allRows) {
+      const remaining = r.target - r.mtd;
+      out.push({ ...r, pct: r.target ? r.eom / r.target : null, remaining, per_day: daysLeft > 0 ? remaining / daysLeft : null });
+    }
+    return out;
+  },
+});
+
+
+dash.calc('channel_trend', {
+  inputs: ['channel_daily', 'channel_pacing', 'channel_month'],
+  title: 'Daily spend trend per channel',
+  description: 'Per country and channel (plus Total, and ALL = the eight countries summed), for each day of the month so far (and the 6 days before it): spend that day, the 7-day moving average of daily spend (that day and the 6 before, including the end of last month), and the daily spend needed from that day on to land exactly on the channel target ((target − spent before that day) ÷ days left including that day).',
+  fn: (channel_daily, channel_pacing, channel_month) => {
+    if (!channel_month.length || !channel_pacing.length) return [];
+    const month = channel_month[0].month;
+    const dim = Number(channel_month[0].days_in_month);
+    const elapsed = Number(channel_month[0].days_elapsed);
+    const start = new Date(month + '-01T00:00:00Z');
+    const iso = (d) => d.toISOString().slice(0, 10);
+    const dayAt = (i) => iso(new Date(start.getTime() + i * 864e5));
+    const series = new Map();
+    const add = (c, ch, day, v) => {
+      const k = c + '|' + ch;
+      if (!series.has(k)) series.set(k, new Map());
+      const m = series.get(k); m.set(day, (m.get(day) || 0) + v);
+    };
+    for (const r of channel_daily) {
+      const v = Number(r.cost) || 0;
+      add(r.country, r.channel, r.day, v);
+      add(r.country, 'Total', r.day, v);
+      add('ALL', r.channel, r.day, v);
+      add('ALL', 'Total', r.day, v);
+    }
+    const out = [];
+    for (const p of channel_pacing) {
+      const m = series.get(p.country + '|' + p.channel) || new Map();
+      const target = Number(p.target) || 0;
+      let cumBefore = 0;
+      for (let i = -6; i < elapsed; i++) {
+        const day = dayAt(i);
+        let w = 0;
+        for (let j = -6; j <= 0; j++) w += m.get(dayAt(i + j)) || 0;
+        const cost = m.get(day) || 0;
+        const left = dim - i;
+        out.push({ country: p.country, channel: p.channel, day, cost, ma7: w / 7, need: i >= 0 && target > 0 && left > 0 ? (target - cumBefore) / left : null });
+        if (i >= 0) cumBefore += cost;
+      }
+    }
+    return out;
+  },
+});
+
+
+dash.calc('daily_pacing', {
+  inputs: ['daily_pace', 'targets'],
+  title: 'Daily pacing vs target',
+  description: 'Running total of rental revenue and traveller costs per day, next to the target pace (monthly target × day ÷ days in month) and last year’s pattern (share of the same month last year reached by that day). Also the cost ratio (costs ÷ revenue): running, per day, last year’s running ratio and the target ratio. ALL is the eight countries together.',
+  fn: (daily_pace, targets) => {
+    if (!daily_pace.length) return [];
+    const month = daily_pace[0].month;
+    const order = ['FR', 'NL', 'ES', 'UK', 'BE', 'IT', 'PT', 'DE'];
+    const tg = (c, k) => (c === 'ALL'
+      ? targets.filter((t) => t.month === month && order.includes(t.country)).reduce((s, t) => s + (Number(t[k]) || 0), 0)
+      : Number((targets.find((t) => t.month === month && t.country === c) || {})[k]) || 0);
+    return daily_pace.map((r) => {
+      const day = Number(r.day_of_month);
+      const dim = Number(r.days_in_month);
+      const revTarget = tg(r.country, 'rental_revenue');
+      const costTarget = tg(r.country, 'traveller_cost');
+      const rev_pace = revTarget * day / dim;
+      const cost_pace = costTarget * day / dim;
+      const rev_cum = r.revenue_cum == null ? null : Number(r.revenue_cum);
+      const cost_cum = r.cost_cum == null ? null : Number(r.cost_cum);
+      const lyRevTotal = Number(r.ly_revenue_total) || 0;
+      const lyCostTotal = Number(r.ly_cost_total) || 0;
+      return {
+        country: r.country, day: r.day, day_of_month: day, days_in_month: dim,
+        rev_cum, rev_pace, rev_vs_pace: rev_pace && rev_cum != null ? rev_cum / rev_pace : null, rev_target: revTarget,
+        cost_cum, cost_pace, cost_vs_pace: cost_pace && cost_cum != null ? cost_cum / cost_pace : null, cost_target: costTarget,
+        ly_rev_cum: Number(r.ly_revenue_cum) || 0, ly_rev_share: lyRevTotal ? Number(r.ly_revenue_cum) / lyRevTotal : null,
+        ly_cost_cum: Number(r.ly_cost_cum) || 0, ly_cost_share: lyCostTotal ? Number(r.ly_cost_cum) / lyCostTotal : null,
+        ratio_cum: rev_cum ? cost_cum / rev_cum : null,
+        ratio_day: r.revenue != null && Number(r.revenue) > 0 ? Number(r.cost) / Number(r.revenue) : null,
+        ly_ratio_cum: Number(r.ly_revenue_cum) > 0 ? Number(r.ly_cost_cum) / Number(r.ly_revenue_cum) : null,
+        ratio_target: revTarget ? costTarget / revTarget : null,
+      };
+    });
+  },
+});
+
+dash.calc('attention_points', {
+  inputs: ['traveller_overview', 'channel_pacing', 'advertiser_overview'],
+  title: 'Attention points',
+  description: 'Rule based flags: countries missing net revenue target (top 2), the biggest case of costs running far ahead of revenue, the channel spending furthest above what its target allows per day over the last 7 days, the biggest spend without a channel budget, lead targets at risk, and the strongest country.',
+  fn: (traveller_overview, channel_pacing, advertiser_overview) => {
+    const out = [];
+    const countries = traveller_overview.filter((r) => r.country !== 'TOTAL');
+    // 1. Net revenue below target, biggest gaps first (max 3)
+    countries.filter((r) => r.net_delta < 0 && r.net_target > 0)
+      .sort((a, b) => a.net_delta - b.net_delta).slice(0, 2)
+      .forEach((r) => out.push({ kind: 'net_gap', severity: 1, country: r.country, channel: '', a: r.net_delta, b: r.cost_pct, c: r.rev_pct, score: -r.net_delta }));
+    // 2. Costs far ahead of revenue (cost % at least 25 points above revenue %)
+    countries.filter((r) => r.cost_pct != null && r.rev_pct != null && r.cost_pct - r.rev_pct >= 0.25 && r.cost_pct > 1.1)
+      .sort((a, b) => (b.cost_pct - b.rev_pct) - (a.cost_pct - a.rev_pct)).slice(0, 1)
+      .forEach((r) => out.push({ kind: 'cost_vs_rev', severity: 2, country: r.country, channel: '', a: r.cost_pct, b: r.rev_pct, c: r.cost_eom - r.cost_target, score: (r.cost_eom - r.cost_target) }));
+    // 3. Channels spending faster than target allows (7d avg at least 25% above per-day-to-target), top 3 by daily excess
+    channel_pacing.filter((r) => r.country !== 'ALL' && r.channel !== 'Total' && r.target > 0 && r.per_day != null && r.avg_7d > Math.max(0, r.per_day) * 1.25 && r.avg_7d - Math.max(0, r.per_day) >= 25)
+      .sort((a, b) => (b.avg_7d - Math.max(0, b.per_day)) - (a.avg_7d - Math.max(0, a.per_day))).slice(0, 1)
+      .forEach((r) => out.push({ kind: 'channel_fast', severity: 2, country: r.country, channel: r.channel, a: r.avg_7d, b: r.per_day, c: r.pct, score: r.avg_7d - Math.max(0, r.per_day) }));
+    // 4. Spend on a channel with no budget in the split
+    channel_pacing.filter((r) => r.country !== 'ALL' && r.channel !== 'Total' && r.target === 0 && r.mtd >= 250)
+      .sort((a, b) => b.mtd - a.mtd).slice(0, 1)
+      .forEach((r) => out.push({ kind: 'no_budget', severity: 3, country: r.country, channel: r.channel, a: r.mtd, b: r.eom, c: null, score: r.mtd }));
+    // 5. Owner leads below 80% of target
+    const lowLeads = advertiser_overview.filter((r) => r.country !== 'TOTAL' && r.leads_target > 0 && r.leads_pct != null && r.leads_pct < 0.8)
+      .sort((a, b) => a.leads_pct - b.leads_pct);
+    if (lowLeads.length) out.push({ kind: 'leads_low', severity: 3, country: lowLeads.map((r) => r.country).join(', '), channel: '', a: lowLeads[0].leads_pct, b: null, c: lowLeads.length, score: 0, worst: lowLeads[0].country });
+    // 6. Strongest country
+    const best = countries.slice().sort((a, b) => b.net_delta - a.net_delta)[0];
+    if (best && best.net_delta > 0) out.push({ kind: 'best', severity: 4, country: best.country, channel: '', a: best.net_delta, b: best.rev_pct, c: best.cost_pct, score: best.net_delta });
+    return out.map((r, i) => ({ id: String(i + 1), ...r }));
+  },
+});
+
+(function () {
+  const root = document.querySelector('.mst');
+  const eur = (v) => (v == null || !isFinite(v) ? '—' : (v < 0 ? '−€' : '€') + d3.format(',.0f')(Math.abs(v)));
+  const eurSigned = (v) => (v == null || !isFinite(v) ? '—' : (v < 0 ? '−€' : '+€') + d3.format(',.0f')(Math.abs(v)));
+  const eur2 = (v) => (v == null || !isFinite(v) ? '—' : '€' + d3.format(',.2f')(v));
+  const pct = (v) => (v == null || !isFinite(v) ? '—' : d3.format('.0%')(v));
+  const two = (v) => (v == null || !isFinite(v) ? '—' : d3.format('.2f')(v));
+  const num = (v) => (v == null || !isFinite(v) ? '—' : d3.format(',.0f')(v));
+  const monthName = d3.utcFormat('%B %Y');
+  const dayFmt = d3.utcFormat('%b %-d');
+
+  document.querySelectorAll('.mst-sw-0').forEach((n) => { n.style.background = dash.colors[0]; });
+  document.querySelectorAll('.mst-sw-1').forEach((n) => { n.style.background = dash.colors[1]; });
+
+  // Month picker: frozen on the snapshot's month.
+  const sel = root.querySelector('.mst-month');
+  sel.replaceChildren(new Option('October 2026', '2026-10-01'));
+  sel.value = '2026-10-01';
+  sel.addEventListener('change', () => dash.setParams(sel.value === 'ytd' ? { ytd: true, month: null } : { ytd: false, month: sel.value }));
+
+  // Country pills for channel pacing.
+  const pills = root.querySelector('#table-channels .mst-pills');
+  const COUNTRY_LIST = ['FR', 'NL', 'ES', 'UK', 'BE', 'IT', 'PT', 'DE'];
+  pills.replaceChildren(...['ALL', ...COUNTRY_LIST].map((c) => {
+    const b = document.createElement('button');
+    b.type = 'button'; b.className = 'mst-pill'; b.textContent = c === 'ALL' ? 'All' : c; b.dataset.c = c;
+    return b;
+  }));
+  pills.addEventListener('click', (e) => {
+    const b = e.target.closest('button[data-c]');
+    if (b) dash.setParams({ country: b.dataset.c });
+  });
+
+  // Hover and click label for the last-7-days bars.
+  const chanCard = root.querySelector('#table-channels');
+  chanCard.style.position = 'relative';
+  const sparkTip = document.createElement('div');
+  sparkTip.className = 'mst-tip mst-spark-tip';
+  chanCard.appendChild(sparkTip);
+  const ctbody = root.querySelector('.mst-ctable tbody');
+  let pinned = null;
+  const unhl = (keep) => ctbody.querySelectorAll('rect[data-hl]').forEach((r) => { if (r !== keep) { r.removeAttribute('data-hl'); r.setAttribute('fill-opacity', r.dataset.op); } });
+  const hideSparkTip = () => { sparkTip.style.display = 'none'; unhl(null); };
+  const showSparkTip = (hit, cx, cy) => {
+    const h = document.createElement('div'); h.className = 'mst-tip-h'; h.textContent = hit.dataset.tipH;
+    const v = document.createElement('div'); v.textContent = hit.dataset.tipV;
+    sparkTip.replaceChildren(h, v);
+    if (hit.dataset.tipN) { const n = document.createElement('div'); n.className = 'mst-tip-h'; n.textContent = hit.dataset.tipN; sparkTip.appendChild(n); }
+    sparkTip.style.display = 'block';
+    const box = chanCard.getBoundingClientRect();
+    const w = sparkTip.offsetWidth, ht = sparkTip.offsetHeight;
+    let left = cx - box.left + 12;
+    if (left + w > box.width - 4) left = cx - box.left - w - 12;
+    sparkTip.style.left = Math.max(4, left) + 'px';
+    sparkTip.style.top = Math.max(4, cy - box.top - ht - 10) + 'px';
+    const bar = hit.previousElementSibling;
+    unhl(bar);
+    if (bar && !bar.dataset.hl) { bar.dataset.op = bar.getAttribute('fill-opacity'); bar.dataset.hl = '1'; bar.setAttribute('fill-opacity', 1); }
+  };
+  const hitAt = (e) => e.target && e.target.closest ? e.target.closest('rect[data-tip-h]') : null;
+  ctbody.addEventListener('pointermove', (e) => {
+    if (pinned) return;
+    const hit = hitAt(e);
+    if (hit) showSparkTip(hit, e.clientX, e.clientY); else hideSparkTip();
+  });
+  ctbody.addEventListener('pointerleave', () => { if (!pinned) hideSparkTip(); });
+  ctbody.addEventListener('click', (e) => {
+    const hit = hitAt(e);
+    if (!hit) return;
+    e.stopPropagation(); e.preventDefault();
+    if (pinned === hit) { pinned = null; hideSparkTip(); return; }
+    pinned = hit; showSparkTip(hit, e.clientX, e.clientY);
+  }, true);
+  document.addEventListener('click', (e) => { if (pinned && !hitAt(e)) { pinned = null; hideSparkTip(); } });
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && pinned) { pinned = null; hideSparkTip(); } });
+
+  // Country pills for the pacing charts.
+  const pacePills = root.querySelector('.mst-pace-pills');
+  pacePills.replaceChildren(...['ALL', ...COUNTRY_LIST].map((c) => {
+    const b = document.createElement('button');
+    b.type = 'button'; b.className = 'mst-pill'; b.textContent = c === 'ALL' ? 'All' : c; b.dataset.c = c;
+    return b;
+  }));
+  pacePills.addEventListener('click', (e) => {
+    const b = e.target.closest('button[data-c]');
+    if (b) dash.setParams({ pace_country: b.dataset.c });
+  });
+
+  const compact = (v) => (v == null || !isFinite(v) ? '—' : '€' + new Intl.NumberFormat('en', { notation: 'compact', maximumFractionDigits: 1 }).format(v));
+
+  function drawPace(box, allRows, showLy) {
+    const tip = box.querySelector('.mst-tip');
+    box.querySelectorAll('svg, .mst-fail').forEach((n) => n.remove());
+    const rows = allRows.filter((r) => r.rev_cum != null);
+    if (!rows.length) return;
+    const series = [
+      { k: 'rev', label: 'Rental revenue', ci: 1 },
+      { k: 'cost', label: 'Traveller costs', ci: 0 },
+    ];
+    const dim = rows[0].days_in_month;
+    const last = rows[rows.length - 1];
+    const share = (r, k) => (r[k + '_target'] ? r[k + '_cum'] / r[k + '_target'] : null);
+    const proj = (k) => (last.day_of_month && last[k + '_target'] ? last[k + '_cum'] / last.day_of_month * dim / last[k + '_target'] : null);
+    const W = Math.max(280, box.clientWidth), H = 280, top = 12, bottom = 24;
+    const svg = d3.select(box).append('svg').attr('width', '100%').attr('viewBox', `0 0 ${W} ${H}`).attr('role', 'img')
+      .attr('aria-label', 'Rental revenue and traveller costs as share of monthly target, per day');
+    const maxShare = d3.max([1, ...series.map((s) => proj(s.k) || 0), ...rows.flatMap((r) => series.map((s) => share(r, s.k) || 0))]);
+    const lyLine = (k) => d3.line().defined((d) => d['ly_' + k + '_share'] != null).x((d) => x(d.day_of_month)).y((d) => y(d['ly_' + k + '_share']));
+    const y = d3.scaleLinear([0, maxShare * 1.05], [H - bottom, top]).nice();
+    const yt = y.ticks(5);
+    const probe = svg.append('text').attr('font-size', 11).text('000%');
+    const left = Math.ceil(probe.node().getComputedTextLength()) + 10;
+    probe.remove();
+    const endProbe = svg.append('text').attr('font-size', 11).text('Costs 000%');
+    const right = Math.ceil(endProbe.node().getComputedTextLength()) + 8;
+    endProbe.remove();
+    const x = d3.scaleLinear([1, dim], [left, W - right]);
+    svg.append('g').selectAll('line').data(yt).join('line').attr('x1', left).attr('x2', W - right)
+      .attr('y1', (d) => y(d)).attr('y2', (d) => y(d)).attr('stroke', 'var(--cds-chart-grid)').attr('stroke-width', 1);
+    svg.append('g').selectAll('text').data(yt).join('text').attr('x', left - 6).attr('y', (d) => y(d)).attr('dy', '0.35em')
+      .attr('text-anchor', 'end').attr('font-size', 11).attr('fill', 'var(--color-fg-muted)').text((d) => d3.format('.0%')(d));
+    const xt = [1, 8, 15, 22, dim].filter((d, i, a) => a.indexOf(d) === i && (d === dim || dim - d >= 3));
+    svg.append('g').selectAll('text').data(xt).join('text').attr('x', (d) => x(d)).attr('y', H - 6).attr('text-anchor', 'middle')
+      .attr('font-size', 11).attr('fill', 'var(--color-fg-muted)').text((d) => d);
+    svg.append('line').attr('x1', left).attr('x2', W - right).attr('y1', y(0)).attr('y2', y(0)).attr('stroke', 'var(--cds-chart-axis)');
+    // target pace: 1/dim on day 1 up to 100% on the last day
+    svg.append('line').attr('x1', x(1)).attr('y1', y(1 / dim)).attr('x2', x(dim)).attr('y2', y(1))
+      .attr('stroke', 'var(--cds-chart-reference)').attr('stroke-width', 1.5).attr('stroke-dasharray', '5 4');
+    // last year's pattern: share of last year's month reached by each day
+    if (showLy) for (const s of series) {
+      svg.append('path').datum(allRows).attr('d', lyLine(s.k)).attr('fill', 'none').attr('stroke', dash.colors[s.ci])
+        .attr('stroke-opacity', 0.35).attr('stroke-width', 2).attr('stroke-linecap', 'round').attr('stroke-linejoin', 'round');
+    }
+    const ends = [{ y: y(1), text: 'Target', color: 'var(--color-fg-muted)' }];
+    for (const s of series) {
+      const pts = rows.filter((r) => share(r, s.k) != null);
+      if (!pts.length) continue;
+      const lp = pts[pts.length - 1];
+      const pe = proj(s.k);
+      if (lp.day_of_month < dim && pe != null) {
+        svg.append('line').attr('x1', x(lp.day_of_month)).attr('y1', y(share(lp, s.k))).attr('x2', x(dim)).attr('y2', y(pe))
+          .attr('stroke', dash.colors[s.ci]).attr('stroke-width', 2).attr('stroke-dasharray', '1 5').attr('stroke-linecap', 'round');
+      }
+      svg.append('path').datum(pts).attr('d', d3.line().x((d) => x(d.day_of_month)).y((d) => y(share(d, s.k))))
+        .attr('fill', 'none').attr('stroke', dash.colors[s.ci]).attr('stroke-width', 2).attr('stroke-linecap', 'round').attr('stroke-linejoin', 'round');
+      svg.append('circle').attr('cx', x(lp.day_of_month)).attr('cy', y(share(lp, s.k))).attr('r', 3.5).attr('fill', dash.colors[s.ci]);
+      const endV = lp.day_of_month < dim ? pe : share(lp, s.k);
+      ends.push({ y: y(endV), text: (s.k === 'rev' ? 'Revenue ' : 'Costs ') + d3.format('.0%')(endV), color: dash.colors[s.ci] });
+    }
+    // end labels, pushed apart so they don't overlap
+    ends.sort((a, b) => a.y - b.y);
+    for (let i = 1; i < ends.length; i++) if (ends[i].y - ends[i - 1].y < 13) ends[i].y = ends[i - 1].y + 13;
+    for (const e of ends) svg.append('text').attr('x', x(dim) + 4).attr('y', e.y).attr('dy', '0.35em').attr('font-size', 11).attr('fill', e.color).text(e.text);
+    const dots = series.map((s) => svg.append('circle').attr('r', 4).attr('fill', dash.colors[s.ci]).attr('stroke', 'var(--color-panel)').attr('stroke-width', 2).style('display', 'none'));
+    const rule = svg.append('line').attr('y1', top).attr('y2', H - bottom).attr('stroke', 'var(--cds-chart-axis)').style('display', 'none');
+    svg.append('rect').attr('x', left).attr('y', top).attr('width', Math.max(0, W - right - left)).attr('height', H - top - bottom).attr('fill', 'transparent')
+      .on('mousemove', (event) => {
+        const [mx] = d3.pointer(event);
+        const dd = Math.round(x.invert(mx));
+        const r = allRows.reduce((a, b) => (Math.abs(b.day_of_month - dd) < Math.abs(a.day_of_month - dd) ? b : a));
+        rule.style('display', null).attr('x1', x(r.day_of_month)).attr('x2', x(r.day_of_month));
+        tip.replaceChildren();
+        const h = document.createElement('div'); h.className = 'mst-tip-h';
+        h.textContent = dayFmt(new Date(r.day + 'T00:00:00Z')) + ' · pace ' + d3.format('.0%')(r.day_of_month / dim); tip.appendChild(h);
+        series.forEach((s, i) => {
+          const v = share(r, s.k);
+          if (v != null) dots[i].style('display', null).attr('cx', x(r.day_of_month)).attr('cy', y(v));
+          else dots[i].style('display', 'none');
+          const line = document.createElement('div');
+          const sw = document.createElement('i'); sw.className = 'mst-sw'; sw.style.background = dash.colors[s.ci];
+          line.append(sw, v != null ? `${s.label} ${pct(v)} of target · ${eur(r[s.k + '_cum'])} (${pct(r[s.k + '_vs_pace'])} of pace)` : `${s.label} no data yet`);
+          tip.appendChild(line);
+          const ly = document.createElement('div'); ly.style.color = 'var(--color-fg-muted)'; ly.style.paddingLeft = '1rem';
+          ly.textContent = `Last year by this day ${pct(r['ly_' + s.k + '_share'])} of the month (${eur(r['ly_' + s.k + '_cum'])})`;
+          if (showLy) tip.appendChild(ly);
+        });
+        tip.style.display = 'block';
+        const [bx, by] = d3.pointer(event, box);
+        tip.style.left = Math.min(Math.max(0, bx + 12), box.clientWidth - tip.offsetWidth) + 'px';
+        tip.style.top = Math.max(0, by - 50) + 'px';
+      })
+      .on('mouseleave', () => { tip.style.display = 'none'; dots.forEach((d) => d.style('display', 'none')); rule.style('display', 'none'); });
+  }
+
+  // Last year toggle (pacing and ratio charts).
+  const lyToggle = root.querySelector('.mst-ly-toggle');
+  lyToggle.addEventListener('change', () => dash.setParams({ show_ly: lyToggle.checked }));
+  document.querySelectorAll('.mst-sw-r').forEach((n) => { n.style.background = dash.colors[2]; });
+
+  // Country pills for the ratio chart.
+  const ratioPills = root.querySelector('.mst-ratio-pills');
+  ratioPills.replaceChildren(...['ALL', ...COUNTRY_LIST].map((c) => {
+    const b = document.createElement('button');
+    b.type = 'button'; b.className = 'mst-pill'; b.textContent = c === 'ALL' ? 'All' : c; b.dataset.c = c;
+    return b;
+  }));
+  ratioPills.addEventListener('click', (e) => {
+    const b = e.target.closest('button[data-c]');
+    if (b) dash.setParams({ ratio_country: b.dataset.c });
+  });
+
+  function drawRatio(box, allRows, showLy) {
+    const tip = box.querySelector('.mst-tip');
+    box.querySelectorAll('svg, .mst-fail').forEach((n) => n.remove());
+    const rows = allRows.filter((r) => r.ratio_cum != null);
+    if (!rows.length) return;
+    const dim = allRows[0].days_in_month;
+    const target = allRows[0].ratio_target;
+    const col = dash.colors[2];
+    const W = Math.max(280, box.clientWidth), H = 260, top = 12, bottom = 24;
+    const svg = d3.select(box).append('svg').attr('width', '100%').attr('viewBox', `0 0 ${W} ${H}`).attr('role', 'img').attr('aria-label', 'Cost ratio per day this month');
+    const vals = [target || 0, ...rows.map((r) => r.ratio_cum), ...(showLy ? allRows.map((r) => r.ly_ratio_cum || 0) : [])];
+    const dayVals = rows.map((r) => r.ratio_day).filter((v) => v != null);
+    const hi = Math.max(d3.max(vals) || 0.3, d3.quantile(dayVals.slice().sort(d3.ascending), 0.95) || 0) * 1.1;
+    const y = d3.scaleLinear([0, hi], [H - bottom, top]).nice();
+    const yt = y.ticks(5);
+    const probe = svg.append('text').attr('font-size', 11).text('0.00');
+    const left = Math.ceil(probe.node().getComputedTextLength()) + 10;
+    probe.remove();
+    const endProbe = svg.append('text').attr('font-size', 11).text('Target 0.00');
+    const right = Math.ceil(endProbe.node().getComputedTextLength()) + 8;
+    endProbe.remove();
+    const x = d3.scaleLinear([1, dim], [left, W - right]);
+    svg.append('g').selectAll('line').data(yt).join('line').attr('x1', left).attr('x2', W - right)
+      .attr('y1', (d) => y(d)).attr('y2', (d) => y(d)).attr('stroke', 'var(--cds-chart-grid)').attr('stroke-width', 1);
+    svg.append('g').selectAll('text').data(yt).join('text').attr('x', left - 6).attr('y', (d) => y(d)).attr('dy', '0.35em')
+      .attr('text-anchor', 'end').attr('font-size', 11).attr('fill', 'var(--color-fg-muted)').text((d) => d3.format('.2f')(d));
+    const xt = [1, 8, 15, 22, dim].filter((d, i, a) => a.indexOf(d) === i && (d === dim || dim - d >= 3));
+    svg.append('g').selectAll('text').data(xt).join('text').attr('x', (d) => x(d)).attr('y', H - 6).attr('text-anchor', 'middle')
+      .attr('font-size', 11).attr('fill', 'var(--color-fg-muted)').text((d) => d);
+    svg.append('line').attr('x1', left).attr('x2', W - right).attr('y1', y(0)).attr('y2', y(0)).attr('stroke', 'var(--cds-chart-axis)');
+    const ends = [];
+    if (target != null) {
+      svg.append('line').attr('x1', left).attr('x2', W - right).attr('y1', y(target)).attr('y2', y(target))
+        .attr('stroke', 'var(--cds-chart-reference)').attr('stroke-width', 1.5).attr('stroke-dasharray', '5 4');
+      ends.push({ y: y(target), text: 'Target ' + two(target), color: 'var(--color-fg-muted)' });
+    }
+    if (showLy) {
+      svg.append('path').datum(allRows).attr('d', d3.line().defined((d) => d.ly_ratio_cum != null).x((d) => x(d.day_of_month)).y((d) => y(d.ly_ratio_cum)))
+        .attr('fill', 'none').attr('stroke', col).attr('stroke-opacity', 0.3).attr('stroke-width', 2).attr('stroke-linecap', 'round').attr('stroke-linejoin', 'round');
+      const lyEnd = allRows[allRows.length - 1].ly_ratio_cum;
+      if (lyEnd != null) ends.push({ y: y(lyEnd), text: 'LY ' + two(lyEnd), color: 'var(--color-fg-muted)' });
+    }
+    svg.append('g').selectAll('circle').data(rows.filter((r) => r.ratio_day != null)).join('circle')
+      .attr('cx', (d) => x(d.day_of_month)).attr('cy', (d) => y(Math.min(d.ratio_day, y.domain()[1]))).attr('r', 3)
+      .attr('fill', col).attr('fill-opacity', 0.4);
+    svg.append('path').datum(rows).attr('d', d3.line().x((d) => x(d.day_of_month)).y((d) => y(d.ratio_cum)))
+      .attr('fill', 'none').attr('stroke', col).attr('stroke-width', 2).attr('stroke-linecap', 'round').attr('stroke-linejoin', 'round');
+    const last = rows[rows.length - 1];
+    svg.append('circle').attr('cx', x(last.day_of_month)).attr('cy', y(last.ratio_cum)).attr('r', 3.5).attr('fill', col);
+    ends.push({ y: y(last.ratio_cum), text: 'Now ' + two(last.ratio_cum), color: col, x: x(last.day_of_month) + 6 });
+    ends.sort((a, b) => a.y - b.y);
+    for (let i = 1; i < ends.length; i++) if (ends[i].y - ends[i - 1].y < 13) ends[i].y = ends[i - 1].y + 13;
+    for (const e of ends) svg.append('text').attr('x', e.x != null && e.x < W - right - 50 ? e.x : x(dim) + 4).attr('y', e.y).attr('dy', '0.35em').attr('font-size', 11).attr('fill', e.color).text(e.text);
+    const dot = svg.append('circle').attr('r', 4).attr('fill', col).attr('stroke', 'var(--color-panel)').attr('stroke-width', 2).style('display', 'none');
+    const rule = svg.append('line').attr('y1', top).attr('y2', H - bottom).attr('stroke', 'var(--cds-chart-axis)').style('display', 'none');
+    svg.append('rect').attr('x', left).attr('y', top).attr('width', Math.max(0, W - right - left)).attr('height', H - top - bottom).attr('fill', 'transparent')
+      .on('mousemove', (event) => {
+        const [mx] = d3.pointer(event);
+        const dd = Math.round(x.invert(mx));
+        const r = allRows.reduce((a, b) => (Math.abs(b.day_of_month - dd) < Math.abs(a.day_of_month - dd) ? b : a));
+        rule.style('display', null).attr('x1', x(r.day_of_month)).attr('x2', x(r.day_of_month));
+        if (r.ratio_cum != null) dot.style('display', null).attr('cx', x(r.day_of_month)).attr('cy', y(r.ratio_cum)); else dot.style('display', 'none');
+        tip.replaceChildren();
+        const h = document.createElement('div'); h.className = 'mst-tip-h'; h.textContent = dayFmt(new Date(r.day + 'T00:00:00Z')); tip.appendChild(h);
+        const lines = r.ratio_cum != null
+          ? [`Running ratio ${two(r.ratio_cum)}`, `That day ${two(r.ratio_day)}`]
+          : ['No data yet'];
+        lines.push(`Target ${two(r.ratio_target)}`);
+        if (showLy) lines.push(`Last year running ${two(r.ly_ratio_cum)}`);
+        for (const l of lines) { const d = document.createElement('div'); d.textContent = l; tip.appendChild(d); }
+        tip.style.display = 'block';
+        const [bx, by] = d3.pointer(event, box);
+        tip.style.left = Math.min(Math.max(0, bx + 12), box.clientWidth - tip.offsetWidth) + 'px';
+        tip.style.top = Math.max(0, by - 50) + 'px';
+      })
+      .on('mouseleave', () => { tip.style.display = 'none'; dot.style('display', 'none'); rule.style('display', 'none'); });
+  }
+
+  const failIn = (el, msg) => { const d = document.createElement('div'); d.className = 'mst-fail'; d.textContent = msg || 'Failed to load'; el.replaceChildren(d); };
+  const unskel = (el) => el.classList.remove('dash-skeleton');
+  const badIf = (el, cond) => { el.classList.toggle('is-bad', !!cond); };
+
+  const cell = (tr, text, cls) => { const td = document.createElement('td'); td.textContent = text; if (cls) td.className = cls; tr.appendChild(td); return td; };
+
+  function drawChart(rows) {
+    const box = root.querySelector('#chart-countries .mst-chart');
+    const tip = box.querySelector('.mst-tip');
+    box.querySelectorAll('svg, .mst-fail').forEach((n) => n.remove());
+    const data = rows.filter((r) => r.country !== 'TOTAL');
+    const W = Math.max(280, box.clientWidth);
+    const rowH = 38, top = 8, bottom = 24;
+    const H = top + bottom + data.length * rowH;
+    const svg = d3.select(box).append('svg').attr('width', '100%').attr('viewBox', `0 0 ${W} ${H}`).attr('role', 'img').attr('aria-label', 'Costs and revenue as share of target by country');
+    // measure left labels
+    const probe = svg.append('text').attr('font-size', 12).text('WW');
+    const left = Math.ceil(probe.node().getComputedTextLength()) + 12;
+    probe.remove();
+    const endProbe = svg.append('text').attr('font-size', 12).text('000%');
+    const right = Math.ceil(endProbe.node().getComputedTextLength()) + 10;
+    endProbe.remove();
+    const maxV = Math.max(1.2, d3.max(data, (d) => Math.max(d.cost_pct || 0, d.rev_pct || 0)) || 0);
+    const x = d3.scaleLinear([0, maxV], [left, W - right]);
+    const y = d3.scaleBand(data.map((d) => d.country), [top, H - bottom]).paddingInner(0.25).paddingOuter(0.1);
+    const sub = d3.scaleBand(['cost_pct', 'rev_pct'], [0, y.bandwidth()]).paddingInner(0.15);
+    const ticks = x.ticks(Math.max(2, Math.floor((W - left - right) / 70)));
+    svg.append('g').selectAll('line').data(ticks).join('line')
+      .attr('x1', (d) => x(d)).attr('x2', (d) => x(d)).attr('y1', top).attr('y2', H - bottom)
+      .attr('stroke', 'var(--cds-chart-grid)').attr('stroke-width', 1);
+    svg.append('g').selectAll('text').data(ticks).join('text')
+      .attr('x', (d) => x(d)).attr('y', H - 6).attr('text-anchor', 'middle').attr('font-size', 11)
+      .attr('fill', 'var(--color-fg-muted)').text((d) => d3.format('.0%')(d));
+    svg.append('line').attr('x1', x(1)).attr('x2', x(1)).attr('y1', top - 4).attr('y2', H - bottom)
+      .attr('stroke', 'var(--cds-chart-reference)').attr('stroke-width', 1.5).attr('stroke-dasharray', '4 3');
+    svg.append('g').selectAll('text').data(data).join('text')
+      .attr('x', left - 10).attr('y', (d) => y(d.country) + y.bandwidth() / 2).attr('dy', '0.35em')
+      .attr('text-anchor', 'end').attr('font-size', 12).attr('fill', 'var(--color-fg)').text((d) => d.country);
+    const g = svg.append('g').selectAll('g').data(data).join('g').attr('transform', (d) => `translate(0,${y(d.country)})`);
+    const keys = [['cost_pct', 0, 'Costs'], ['rev_pct', 1, 'Rental revenue']];
+    for (const [k, ci] of keys) {
+      g.append('rect').attr('x', left).attr('y', sub(k)).attr('height', sub.bandwidth())
+        .attr('width', (d) => Math.max(0, x(Math.min(d[k] || 0, maxV)) - left)).attr('rx', 3)
+        .attr('fill', dash.colors[ci]);
+      g.append('text').attr('x', (d) => x(Math.min(d[k] || 0, maxV)) + 4).attr('y', sub(k) + sub.bandwidth() / 2).attr('dy', '0.35em')
+        .attr('font-size', 11).attr('fill', 'var(--color-fg-muted)').text((d) => pct(d[k]));
+    }
+    g.append('rect').attr('x', 0).attr('y', 0).attr('width', W).attr('height', y.bandwidth()).attr('fill', 'transparent')
+      .on('mousemove', (event, d) => {
+        tip.replaceChildren();
+        const h = document.createElement('div'); h.className = 'mst-tip-h'; h.textContent = d.country; tip.appendChild(h);
+        for (const [k, ci, label] of keys) {
+          const line = document.createElement('div');
+          const sw = document.createElement('i'); sw.className = 'mst-sw'; sw.style.background = dash.colors[ci];
+          const amt = k === 'cost_pct' ? `${eur(d.cost_eom)} of ${eur(d.cost_target)}` : `${eur(d.rev_eom)} of ${eur(d.rev_target)}`;
+          line.append(sw, `${label} ${pct(d[k])} · ${amt}`);
+          tip.appendChild(line);
+        }
+        tip.style.display = 'block';
+        const [mx, my] = d3.pointer(event, box);
+        const tw = tip.offsetWidth;
+        tip.style.left = Math.min(Math.max(0, mx + 12), box.clientWidth - tw) + 'px';
+        tip.style.top = Math.max(0, my - 10) + 'px';
+      })
+      .on('mouseleave', () => { tip.style.display = 'none'; });
+  }
+
+  dash.onData(() => {
+    const p = dash.params();
+    root.querySelectorAll('.mst-ytd-only').forEach((el) => { el.hidden = !p.ytd; });
+    const cm = dash.data('country_month');
+    const tov = dash.data('traveller_overview');
+    const aov = dash.data('advertiser_overview');
+    const chp = dash.data('channel_pacing');
+
+    // Month picker + header
+    if (cm.status === 'ok' && cm.data.length) {
+      const r = cm.data[0];
+      sel.value = p.ytd ? 'ytd' : (p.month || r.month + '-01');
+      root.querySelector('.mst-period').textContent = (r.is_ytd === true || r.is_ytd === 'true') ? 'Year to date, current month projected to month end' : 'End-of-month projection';
+      const through = root.querySelector('.mst-through');
+      through.textContent = dayFmt(new Date(r.data_through + 'T00:00:00Z'));
+      unskel(through);
+      root.querySelector('.mst-elapsed').textContent = r.days_elapsed;
+      root.querySelector('.mst-dim').textContent = r.days_in_month;
+    } else if (p.ytd || p.month) {
+      sel.value = p.ytd ? 'ytd' : p.month;
+    }
+
+    // Tiles
+    const fmts = { cost_pct: pct, rev_pct: pct, net_pct: pct, ratio_eom: two, ratio_target: two, cost_eom: eur, cost_target: eur, rev_eom: eur, rev_target: eur, net_delta: eurSigned };
+    const tot = tov.status === 'ok' ? tov.data.find((r) => r.country === 'TOTAL') : null;
+    root.querySelectorAll('[data-t]').forEach((el) => {
+      const k = el.dataset.t;
+      if (tot) { el.textContent = fmts[k](tot[k]); unskel(el); }
+      else if (tov.status === 'error') { el.textContent = '—'; unskel(el); }
+      else el.textContent = '—';
+    });
+    if (tot) {
+      badIf(root.querySelector('[data-t=cost_pct]'), tot.cost_pct > 1.05);
+      badIf(root.querySelector('[data-t=rev_pct]'), tot.rev_pct < 0.95);
+      badIf(root.querySelector('[data-t=net_pct]'), tot.net_pct < 0.95);
+      badIf(root.querySelector('[data-t=ratio_eom]'), tot.ratio_eom > tot.ratio_target * 1.05);
+    }
+
+    // Takeaway
+    const take = root.querySelector('#takeaway');
+    if (tot && tov.data.length) {
+      const rows = tov.data.filter((r) => r.country !== 'TOTAL');
+      const worst = rows.slice().sort((a, b) => a.net_delta - b.net_delta)[0];
+      const best = rows.slice().sort((a, b) => b.net_delta - a.net_delta)[0];
+      const mk = (text, where, field) => { const s = document.createElement('b'); s.dataset.source = 'traveller_overview'; s.dataset.field = field; s.dataset.where = 'country=' + where; s.textContent = text; return s; };
+      take.replaceChildren(
+        'Traveller spend is on course for ', mk(pct(tot.cost_pct), 'TOTAL', 'cost_pct'), ' of target and rental revenue for ', mk(pct(tot.rev_pct), 'TOTAL', 'rev_pct'),
+        ', so net revenue lands ', mk(eurSigned(tot.net_delta), 'TOTAL', 'net_delta'), ' vs target. Biggest gap is ', worst.country, ' (', mk(eurSigned(worst.net_delta), worst.country, 'net_delta'),
+        '), strongest is ', best.country, ' (', mk(eurSigned(best.net_delta), best.country, 'net_delta'), ').'
+      );
+    } else if (tov.status === 'error' || cm.status === 'error') {
+      take.textContent = '';
+    } else if (cm.status === 'ok' && !cm.data.length) {
+      take.textContent = 'No data for this month yet.';
+    } else {
+      const s = document.createElement('span'); s.className = 'dash-skeleton'; s.textContent = '—'; take.replaceChildren(s);
+    }
+
+    // Attention points
+    const attn = dash.data('attention_points');
+    const attnList = root.querySelector('.mst-attn-list');
+    if (attn.status === 'ok') {
+      unskel(attnList);
+      const items = attn.data.slice().sort((a, b) => a.severity - b.severity || b.score - a.score);
+      const B = (s) => { const b = document.createElement('b'); b.textContent = s; return b; };
+      attnList.replaceChildren(...(items.length ? items.map((r) => {
+        const li = document.createElement('li');
+        li.className = 'sev-' + r.severity;
+        li.dataset.source = 'attention_points'; li.dataset.where = 'id=' + r.id;
+        const span = document.createElement('span');
+        if (r.kind === 'net_gap') span.append(B(r.country), ` lands ${eur(Math.abs(r.a))} under its net revenue target. Costs at ${pct(r.b)} of target, revenue at ${pct(r.c)}.`);
+        else if (r.kind === 'cost_vs_rev') span.append(B(r.country), ` costs run at ${pct(r.a)} of target while revenue is at ${pct(r.b)}. That is ${eur(r.c)} over budget by month end.`);
+        else if (r.kind === 'channel_fast') span.append(B(`${r.country} ${r.channel}`), ` spends ${eur(r.a)} a day (last 7 days) while ${r.b > 0 ? eur(r.b) + ' a day' : 'nothing more'} lands it on target.`);
+        else if (r.kind === 'no_budget') span.append(B(`${r.country} ${r.channel}`), ` has ${eur(r.a)} spend so far with no budget in the channel split.`);
+        else if (r.kind === 'leads_low') span.append(B('Owner leads'), ` are below 80% of target in ${r.c === 1 ? '' : r.c + ' countries: '}${r.country}. Lowest is ${r.worst} at ${pct(r.a)}.`);
+        else if (r.kind === 'best') span.append(B(r.country), ` is the strongest market, ${eurSigned(r.a)} on net revenue with revenue at ${pct(r.b)} of target.`);
+        li.appendChild(span);
+        return li;
+      }) : [Object.assign(document.createElement('li'), { textContent: 'Nothing stands out. All countries are on track.' })]));
+    } else if (attn.status === 'error' || tov.status === 'error' || cm.status === 'error') {
+      unskel(attnList); failIn(attnList);
+    } else attnList.replaceChildren();
+
+    // Chart
+    const chartBox = root.querySelector('#chart-countries .mst-chart');
+    if (tov.status === 'ok' && tov.data.length) { unskel(chartBox); drawChart(tov.data); }
+    else if (tov.status === 'error' || cm.status === 'error') { unskel(chartBox); chartBox.querySelectorAll('svg').forEach((n) => n.remove()); if (!chartBox.querySelector('.mst-fail')) { const f = document.createElement('div'); f.className = 'mst-fail'; f.textContent = 'Failed to load'; chartBox.appendChild(f); } }
+    else chartBox.querySelectorAll('svg').forEach((n) => n.remove());
+
+    // Pacing
+    const showLy = p.show_ly !== false;
+    lyToggle.checked = showLy;
+    root.querySelectorAll('.mst-ly-legend').forEach((el) => { el.hidden = !showLy; });
+    const paceC = p.pace_country || 'ALL';
+    pacePills.querySelectorAll('button').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.c === paceC)));
+    const dp = dash.data('daily_pacing');
+    const dpRaw = dash.data('daily_pace');
+    const paceBox = root.querySelector('#pace-chart');
+    const sums = root.querySelectorAll('.mst-pace-sum');
+    if (dp.status === 'ok' && dp.data.length) {
+      const rows = dp.data.filter((r) => r.country === paceC);
+      unskel(paceBox);
+      drawPace(paceBox, rows, showLy);
+      const actual = rows.filter((r) => r.rev_cum != null);
+      const last = actual[actual.length - 1];
+      sums.forEach((sum) => {
+        const kind = sum.dataset.k;
+        if (!last) { sum.textContent = ''; return; }
+        const where = 'country=' + encodeURIComponent(last.country) + '&day=' + encodeURIComponent(last.day);
+        const mk = (text, field) => { const s = document.createElement('b'); s.dataset.source = 'daily_pacing'; s.dataset.field = field; s.dataset.where = where; s.textContent = text; return s; };
+        const vs = last[kind + '_vs_pace'];
+        const pctEl = mk(pct(vs), kind + '_vs_pace');
+        if (vs != null) pctEl.classList.toggle('is-bad', kind === 'rev' ? vs < 0.95 : vs > 1.05);
+        sum.replaceChildren((kind === 'rev' ? 'Revenue' : 'Costs') + ' on day ' + last.day_of_month + ': ', mk(eur(last[kind + '_cum']), kind + '_cum'), ' vs ', mk(eur(last[kind + '_pace']), kind + '_pace'), ' pace, ', pctEl, ' of pace.', ...(showLy ? [' Last year ', mk(pct(last['ly_' + kind + '_share']), 'ly_' + kind + '_share'), ' of the month was in by this day.'] : []));
+      });
+    } else if (dp.status === 'error' || dpRaw.status === 'error') {
+      unskel(paceBox); sums.forEach((s) => { s.textContent = ''; });
+      paceBox.querySelectorAll('svg').forEach((n) => n.remove());
+      if (!paceBox.querySelector('.mst-fail')) { const f = document.createElement('div'); f.className = 'mst-fail'; f.textContent = 'Failed to load'; paceBox.appendChild(f); }
+    } else if (dp.status === 'ok') {
+      unskel(paceBox); sums.forEach((s, i) => { s.textContent = i ? '' : 'No data for this month yet.'; }); paceBox.querySelectorAll('svg').forEach((n) => n.remove());
+    } else { paceBox.querySelectorAll('svg').forEach((n) => n.remove()); }
+
+    // Ratio during the month
+    const ratioC = ['ALL', ...COUNTRY_LIST].includes(p.ratio_country) ? p.ratio_country : 'ALL';
+    ratioPills.querySelectorAll('button').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.c === ratioC)));
+    const ratioBox = root.querySelector('#ratio-chart');
+    const ratioSum = root.querySelector('.mst-ratio-sum');
+    if (dp.status === 'ok' && dp.data.length) {
+      const rows = dp.data.filter((r) => r.country === ratioC);
+      unskel(ratioBox);
+      drawRatio(ratioBox, rows, showLy);
+      const act = rows.filter((r) => r.ratio_cum != null);
+      const last = act[act.length - 1];
+      if (last) {
+        const where = 'country=' + encodeURIComponent(last.country) + '&day=' + encodeURIComponent(last.day);
+        const mk = (text, field) => { const s = document.createElement('b'); s.dataset.source = 'daily_pacing'; s.dataset.field = field; s.dataset.where = where; s.textContent = text; return s; };
+        const now = mk(two(last.ratio_cum), 'ratio_cum');
+        if (last.ratio_target != null) now.classList.toggle('is-bad', last.ratio_cum > last.ratio_target * 1.05);
+        const prev = act.length > 7 ? act[act.length - 8] : null;
+        ratioSum.replaceChildren('Day ' + last.day_of_month + ': running ratio ', now, ' vs ', mk(two(last.ratio_target), 'ratio_target'), ' target',
+          ...(prev ? [', ' + (last.ratio_cum > prev.ratio_cum ? 'up' : 'down') + ' from ' + two(prev.ratio_cum) + ' a week earlier'] : []),
+          ...(showLy ? ['. Last year at this point ', mk(two(last.ly_ratio_cum), 'ly_ratio_cum')] : []), '.');
+      } else ratioSum.textContent = '';
+    } else if (dp.status === 'error' || dpRaw.status === 'error') {
+      unskel(ratioBox); ratioSum.textContent = '';
+      ratioBox.querySelectorAll('svg').forEach((n) => n.remove());
+      if (!ratioBox.querySelector('.mst-fail')) { const f = document.createElement('div'); f.className = 'mst-fail'; f.textContent = 'Failed to load'; ratioBox.appendChild(f); }
+    } else ratioBox.querySelectorAll('svg').forEach((n) => n.remove());
+
+    // Traveller table
+    const tbody = root.querySelector('.mst-ttable tbody');
+    if (tov.status === 'ok') {
+      tbody.replaceChildren(...tov.data.map((r) => {
+        const tr = document.createElement('tr');
+        if (r.country === 'TOTAL') tr.className = 'mst-total';
+        cell(tr, r.country);
+        cell(tr, eur(r.cost_eom), 'mst-wide');
+        cell(tr, pct(r.cost_pct), r.cost_pct > 1.05 ? 'is-bad' : '');
+        cell(tr, pct(r.rev_pct), r.rev_pct < 0.95 ? 'is-bad' : '');
+        cell(tr, pct(r.net_pct), r.net_pct < 0.95 ? 'is-bad' : '');
+        cell(tr, eurSigned(r.net_delta), r.net_delta < 0 ? 'is-bad' : 'is-ok');
+        cell(tr, two(r.ratio_eom), r.ratio_eom > r.ratio_target * 1.05 ? 'is-bad' : '');
+        cell(tr, two(r.ratio_target));
+        return tr;
+      }));
+    } else if (tov.status === 'error' || cm.status === 'error') {
+      const tr = document.createElement('tr'); const td = document.createElement('td'); td.colSpan = 8; failIn(td); tr.appendChild(td); tbody.replaceChildren(tr);
+    } else tbody.replaceChildren();
+
+    // Channel pacing
+    const country = p.country === 'ALL' || COUNTRY_LIST.includes(p.country) ? p.country : 'FR';
+    pills.querySelectorAll('button').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.c === country)));
+    const cbody = root.querySelector('.mst-ctable tbody');
+    sparkTip.style.display = 'none'; pinned = null;
+    if (chp.status === 'ok') {
+      const rows = chp.data.filter((r) => r.country === country);
+      const tr7 = dash.data('channel_trend');
+      const trendBy = new Map();
+      if (tr7.status === 'ok') for (const d of tr7.data) { if (d.country !== country) continue; const k = d.country + '|' + d.channel; if (!trendBy.has(k)) trendBy.set(k, []); trendBy.get(k).push(d); }
+      cbody.replaceChildren(...rows.map((r) => {
+        const tr = document.createElement('tr');
+        tr.dataset.key = encodeURIComponent(r.country) + ',' + encodeURIComponent(r.channel);
+        if (r.channel === 'Total') tr.className = 'mst-total';
+        cell(tr, r.channel);
+        cell(tr, eur(r.target));
+        cell(tr, eur(r.mtd));
+        cell(tr, eur(r.eom));
+        cell(tr, pct(r.pct), r.pct > 1.1 ? 'is-bad' : '');
+        cell(tr, eur(r.remaining), 'mst-wide' + (r.remaining < 0 ? ' is-bad' : ''));
+        cell(tr, r.per_day == null ? '—' : eur(r.per_day), r.per_day < 0 ? 'is-bad' : '');
+        const pts = trendBy.get(r.country + '|' + r.channel) || [];
+        const last = pts[pts.length - 1];
+        const prev = pts.length > 7 ? pts[pts.length - 8] : null;
+        const wk = last && prev && prev.ma7 > 0 ? last.ma7 / prev.ma7 - 1 : null;
+        const need = r.per_day;
+        let status = '—', cls = '';
+        if (r.target > 0 && need != null) {
+          if (need <= 0) { status = 'Over budget'; cls = 'is-bad'; }
+          else if (r.avg_7d > need * 1.1) {
+            if (wk != null && wk <= -0.1) { status = 'Cutting'; cls = 'is-warn'; }
+            else { status = 'Too high'; cls = 'is-bad'; }
+          } else if (r.avg_7d < need * 0.9) { status = 'Room to spend'; cls = ''; }
+          else { status = 'On pace'; cls = 'is-ok'; }
+        } else if (r.target === 0 && r.mtd > 0) { status = 'No target'; cls = 'is-bad'; }
+        cell(tr, eur(r.avg_7d), cls === 'is-bad' ? 'is-bad' : '');
+        cell(tr, wk == null ? '—' : (wk > 0 ? '+' : wk < 0 ? '−' : '') + Math.abs(Math.round(wk * 100)) + '%');
+        const sp = cell(tr, '', 'mst-spark');
+        const last7 = pts.slice(-7);
+        if (last7.length) {
+          const ns = 'http://www.w3.org/2000/svg';
+          const W = 84, H = 22, gap = 2, bw = (W - gap * 6) / 7;
+          const needV = need != null && r.target > 0 ? Math.max(0, need) : null;
+          const max = Math.max(1, ...last7.map((d) => d.cost), needV || 0);
+          const svg = document.createElementNS(ns, 'svg');
+          svg.setAttribute('width', W); svg.setAttribute('height', H); svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+          svg.setAttribute('role', 'img');
+          svg.setAttribute('aria-label', 'Spend per day, last 7 days: ' + last7.map((d) => eur(d.cost)).join(', '));
+          last7.forEach((d, i) => {
+            const h = Math.max(d.cost > 0 ? 1 : 0, (d.cost / max) * (H - 2));
+            const rc = document.createElementNS(ns, 'rect');
+            rc.setAttribute('x', (7 - last7.length + i) * (bw + gap)); rc.setAttribute('y', H - h);
+            rc.setAttribute('width', bw); rc.setAttribute('height', h); rc.setAttribute('rx', 1);
+            rc.setAttribute('fill', needV != null && d.cost > needV * 1.1 ? 'var(--color-bad)' : dash.colors[0]);
+            rc.setAttribute('fill-opacity', i === last7.length - 1 ? 1 : 0.7);
+            svg.appendChild(rc);
+            const hit = document.createElementNS(ns, 'rect');
+            hit.setAttribute('x', (7 - last7.length + i) * (bw + gap) - gap / 2); hit.setAttribute('y', 0);
+            hit.setAttribute('width', bw + gap); hit.setAttribute('height', H); hit.setAttribute('fill', 'transparent');
+            hit.dataset.tipH = dayFmt(new Date(d.day + 'T00:00:00Z'));
+            hit.dataset.tipV = 'Spend ' + eur(d.cost);
+            if (needV != null) hit.dataset.tipN = 'Needed per day ' + eur(needV) + ' (' + (d.cost >= needV ? '+' : '−') + Math.abs(Math.round((needV ? d.cost / needV - 1 : 0) * 100)) + '%)';
+            hit.dataset.bar = String(i);
+            svg.appendChild(hit);
+          });
+          if (needV != null) {
+            const ln = document.createElementNS(ns, 'line');
+            const yy = H - (needV / max) * (H - 2);
+            ln.setAttribute('x1', 0); ln.setAttribute('x2', W); ln.setAttribute('y1', yy); ln.setAttribute('y2', yy);
+            ln.setAttribute('stroke', 'var(--cds-chart-reference)'); ln.setAttribute('stroke-width', 1.5); ln.setAttribute('stroke-dasharray', '3 2');
+            ln.setAttribute('pointer-events', 'none');
+            svg.appendChild(ln);
+          }
+          sp.appendChild(svg);
+        }
+        const st = cell(tr, status, 'mst-status' + (cls ? ' ' + cls : ''));
+        if (status !== '—' && need != null) st.title = `7d avg ${eur(r.avg_7d)} per day vs ${eur(Math.max(0, need))} per day left to land on target`;
+        return tr;
+      }));
+    } else if (chp.status === 'error' || dash.data('channel_month').status === 'error') {
+      const tr = document.createElement('tr'); const td = document.createElement('td'); td.colSpan = 11; failIn(td); tr.appendChild(td); cbody.replaceChildren(tr);
+    } else cbody.replaceChildren();
+
+    // Advertiser table
+    const abody = root.querySelector('.mst-atable tbody');
+    if (aov.status === 'ok') {
+      abody.replaceChildren(...aov.data.map((r) => {
+        const tr = document.createElement('tr');
+        if (r.country === 'TOTAL') tr.className = 'mst-total';
+        cell(tr, r.country);
+        cell(tr, num(r.leads_mtd), 'mst-wide');
+        cell(tr, num(r.leads_eom));
+        cell(tr, num(r.leads_target));
+        cell(tr, pct(r.leads_pct), r.leads_pct < 0.9 ? 'is-bad' : '');
+        cell(tr, eur(r.cost_eom));
+        cell(tr, eur2(r.cpl_eom));
+        cell(tr, eur2(r.cpl_target));
+        return tr;
+      }));
+    } else if (aov.status === 'error' || cm.status === 'error') {
+      const tr = document.createElement('tr'); const td = document.createElement('td'); td.colSpan = 8; failIn(td); tr.appendChild(td); abody.replaceChildren(tr);
+    } else abody.replaceChildren();
+  });
+})();
+</script>
+
+

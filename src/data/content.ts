@@ -68,6 +68,7 @@ export const timeline = [
         "Gestion de +2M€ de budget media pour des campagnes SEA / Social Ads à l'international (FR/ES/IT/PT)",
         "+25% de leads avec un CPL divisé par 2 sur l'Europe du Sud en 2025",
         "Mise en place de tests d'incrémentalité (lift studies) et analyse de performances via un MMM",
+        'Création et optimisation du rapport de suivi de performances et de budget : pilotage mensuel sur 8 pays et 4 canaux, projection de fin de mois et points d\'attention automatiques — <a href="/exemples/suivi-budget-media">voir un exemple</a>',
         'Consolidation du tracking pour 16 sites internationaux',
         'Lead sur la restructuration du tracking après la fusion avec Goboony : fusion des datalayer des deux marques',
         'Collaboration étroite avec les équipes Content pour optimiser les performances des publicités & Dev pour optimiser le tracking',

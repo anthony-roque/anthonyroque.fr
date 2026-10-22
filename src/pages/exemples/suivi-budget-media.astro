@@ -1,0 +1,302 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import dashboard from '../../dashboard/marketing-spend-tracker.html?raw';
+import { frozenDatasets, frozenParams } from '../../data/demo-spend-tracker';
+
+// Reference categorical palette, slots 1-8. Only the first three are used here:
+// costs, rental revenue, cost ratio.
+const seriesColors = [
+  '#2a78d6',
+  '#eb6834',
+  '#1baf7a',
+  '#eda100',
+  '#e87ba4',
+  '#008300',
+  '#6250d6',
+  '#e34948',
+];
+---
+
+<Layout
+  title="Rapport de suivi budgétaire — exemple | Anthony Roque"
+  description="Reproduction d'un rapport mensuel de suivi de performances et de budget média : 8 pays, 4 canaux, projection de fin de mois et pacing quotidien."
+  canonical="/exemples/suivi-budget-media"
+  noindex
+>
+  <main class="demo">
+    <div class="wrap">
+      <a class="demo__back" href="/#parcours">← Retour au parcours</a>
+
+      <header class="demo__head">
+        <h1 class="demo__title"><span>Suivi de performances & budget</span></h1>
+        <p class="demo__lede">
+          Un rapport que je construis et fais évoluer pour piloter un budget média réparti sur 8
+          pays et 4 canaux. Il répond à trois questions, tous les matins : est-ce qu'on dépense au
+          bon rythme, est-ce que le revenu suit, et où faut-il corriger aujourd'hui.
+        </p>
+      </header>
+
+      <aside class="demo__notice block">
+        <p class="demo__notice-title">Démo — valeurs fictives</p>
+        <p>
+          Les chiffres affichés sur cette page sont fictifs et figés. Rien ne se met à jour, aucune
+          source de données n'est connectée : c'est une capture statique, là pour montrer la
+          structure du rapport et la façon dont je le lis.
+        </p>
+      </aside>
+
+      <section class="demo__read">
+        <h2 class="demo__h2">Comment je le lis</h2>
+        <ol class="demo__steps">
+          <li>
+            <strong>Attention points.</strong> Les écarts calculés automatiquement : pays sous l'objectif
+            de revenu net, canal qui brûle trop vite, dépense sans budget alloué.
+          </li>
+          <li>
+            <strong>Les quatre tuiles.</strong> Projection de fin de mois contre objectif, sur le coût, le
+            revenu locatif, le revenu net et le ratio coût / revenu.
+          </li>
+          <li>
+            <strong>Le pacing.</strong> Le cumulé du mois en % de l'objectif, avec le rythme cible, la
+            projection et le même mois l'an dernier pour repérer un décalage saisonnier.
+          </li>
+          <li>
+            <strong>Le détail canal.</strong> Ce qu'il reste à dépenser par jour pour atterrir sur
+            l'objectif, face à la moyenne des 7 derniers jours. C'est la ligne sur laquelle j'agis.
+          </li>
+        </ol>
+      </section>
+
+      <div class="demo__frame block">
+        <div class="dash-scope">
+          <script is:inline src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
+
+          <script is:inline define:vars={{ frozenDatasets, frozenParams, seriesColors }}>
+            /**
+             * Stand-in for the reporting runtime the original report runs on.
+             * The page below is unchanged: it asks for datasets and filters the
+             * same way, except every answer comes from a frozen snapshot instead
+             * of a live source, and nothing can be refreshed.
+             */
+            (function () {
+              const datasets = frozenDatasets;
+              const state = Object.assign({}, frozenParams);
+              const calcs = new Map();
+              const derived = new Map();
+              const handlers = [];
+
+              const resolve = (id) => {
+                if (Object.prototype.hasOwnProperty.call(datasets, id)) return datasets[id];
+                if (derived.has(id)) return derived.get(id);
+                const calc = calcs.get(id);
+                if (!calc) return null;
+                const out = calc.fn(...calc.inputs.map((input) => resolve(input) || []));
+                derived.set(id, out);
+                return out;
+              };
+
+              const render = () => {
+                for (const fn of handlers) fn();
+              };
+
+              window.dash = {
+                colors: seriesColors,
+                params: () => Object.assign({}, state),
+                setParams(next) {
+                  Object.assign(state, next);
+                  render();
+                },
+                resetParams() {
+                  Object.assign(state, frozenParams);
+                  render();
+                },
+                data(id) {
+                  const rows = resolve(id);
+                  if (rows == null) return { status: 'missing', data: [], columns: [], refreshing: false, meta: [] };
+                  return {
+                    status: 'ok',
+                    data: rows,
+                    columns: rows.length ? Object.keys(rows[0]) : [],
+                    refreshing: false,
+                    meta: [],
+                  };
+                },
+                calc(id, spec) {
+                  calcs.set(id, spec);
+                },
+                loader() {},
+                refresh() {},
+                setLink() {},
+                onData(fn) {
+                  handlers.push(fn);
+                },
+              };
+
+              // The report registers its calcs as it is parsed, so the first paint
+              // waits for the whole document.
+              if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', render, { once: true });
+              } else {
+                render();
+              }
+
+              let width = window.innerWidth;
+              let pending;
+              window.addEventListener('resize', () => {
+                if (window.innerWidth === width) return;
+                width = window.innerWidth;
+                clearTimeout(pending);
+                pending = setTimeout(render, 150);
+              });
+            })();
+          </script>
+
+          <Fragment set:html={dashboard} />
+        </div>
+      </div>
+
+      <p class="demo__foot">
+        Reproduction statique à valeurs fictives. <a href="/#contact">Me contacter</a> pour en parler.
+      </p>
+    </div>
+  </main>
+</Layout>
+
+<style is:global>
+  .demo {
+    padding: clamp(2rem, 5vw, 3.5rem) 0 clamp(3rem, 7vw, 5rem);
+  }
+
+  .demo__back {
+    display: inline-block;
+    font-size: 0.9rem;
+    font-weight: 700;
+    text-decoration: none;
+    border-bottom: 2px solid var(--yellow);
+    padding-bottom: 2px;
+  }
+
+  .demo__head {
+    margin: 2rem 0 1.5rem;
+  }
+
+  .demo__title {
+    font-size: clamp(1.75rem, 4.5vw, 2.6rem);
+  }
+
+  .demo__title span {
+    background: linear-gradient(transparent 62%, var(--yellow) 62%);
+  }
+
+  .demo__lede {
+    margin-top: 1.25rem;
+    max-width: 48rem;
+  }
+
+  .demo__notice {
+    padding: 1.1rem 1.3rem;
+    margin-bottom: 2rem;
+    background: var(--yellow);
+    max-width: 48rem;
+  }
+
+  .demo__notice p {
+    font-size: 0.95rem;
+  }
+
+  .demo__notice-title {
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: -0.02em;
+    margin-bottom: 0.35rem;
+  }
+
+  .demo__read {
+    padding: 0 0 2.25rem;
+  }
+
+  .demo__h2 {
+    font-size: 1.25rem;
+    margin-bottom: 1rem;
+  }
+
+  .demo__steps {
+    display: grid;
+    gap: 0.7rem;
+    padding-left: 1.2rem;
+    max-width: 48rem;
+    font-size: 0.95rem;
+  }
+
+  .demo__foot {
+    margin-top: 1.75rem;
+    font-size: 0.9rem;
+    color: var(--muted);
+  }
+
+  .demo__frame {
+    padding: clamp(1rem, 3vw, 2rem);
+    overflow: hidden;
+  }
+
+  /* --- Bridge: the report's own design tokens, mapped onto this site -------- */
+
+  .dash-scope {
+    --font-anthropic-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    --font-anthropic-serif: Georgia, 'Iowan Old Style', 'Times New Roman', serif;
+
+    --cds-gap-xs: 0.35rem;
+    --cds-gap-sm: 0.6rem;
+    --cds-gap-md: 1rem;
+    --cds-gap-lg: 1.75rem;
+    --cds-pad-xs: 0.4rem;
+    --cds-pad-sm: 0.6rem;
+    --cds-pad-lg: 1.15rem;
+    --cds-radius: 10px;
+
+    --cds-font-size-title: clamp(1.4rem, 3vw, 1.9rem);
+    --cds-font-size-heading: 1.05rem;
+    --cds-font-size-body: 0.95rem;
+    --cds-font-size-caption: 0.8rem;
+    --cds-font-weight-medium: 700;
+
+    --color-fg: var(--ink);
+    --color-fg-muted: var(--muted);
+    --color-bg: var(--white);
+    --color-panel: var(--white);
+    --color-border-line: #ddd8cc;
+    --color-ok: #1b7f4f;
+    --color-warn: #a96a00;
+    --color-bad: #c0392b;
+
+    --cds-text-secondary: var(--muted);
+    --cds-surface-popover: var(--white);
+    --cds-border: var(--ink);
+    --cds-shadow-popover: 4px 4px 0 var(--ink);
+    --cds-chart-axis: #b9b3a5;
+    --cds-chart-grid: #e9e5db;
+    --cds-chart-reference: #8e887a;
+    --cds-chart-status-critical: #c0392b;
+    --cds-dur-slow: 0.35s;
+
+    line-height: 1.5;
+  }
+
+  /* The site sets uppercase 800 headings globally; the report keeps its own. */
+  .dash-scope h1,
+  .dash-scope h2,
+  .dash-scope h3 {
+    text-transform: none;
+    letter-spacing: -0.01em;
+    line-height: 1.25;
+  }
+
+  .dash-scope .mst-card {
+    box-shadow: none;
+  }
+
+  /* Loading shimmer from the original runtime: nothing here ever loads. */
+  .dash-scope .dash-skeleton {
+    animation: none;
+  }
+</style>
