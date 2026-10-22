@@ -184,3 +184,15 @@ export const stack = [
   { group: 'Build & automatisation', tools: ['Claude Code', 'GitHub', 'Netlify', 'Zapier'] },
   { group: 'Créa & IA', tools: ['Higgsfield', 'Arcads', 'Holo.ai', 'Remotion', 'Hyperframe', 'CapCut'] },
 ];
+
+export const testimonial = {
+  quote: [
+    "Anthony a lancé l'acquisition du SaaS (The Sales Ninja) de 0$ (6 avril 2026) à 200 000$ (2 octobre 2026), un immense merci pour ce démarrage incroyable. Il a su nous aiguiller et exécuter sur la partie créas / tracking / media buying, la stack complète de l'acquisition payante sur Meta donc.",
+    "Échanger et itérer avec toi a été un plaisir, toujours avec calme, réflexion et dans la bonne humeur.",
+    'Bravo pour cette réussite et surtout merci !',
+  ],
+  author: 'Lucas Clavières',
+  role: 'Co-fondateur The Sales Ninja',
+  photo: '/lucas-clavieres.webp',
+  photoAlt: 'Portrait de Lucas Clavières, co-fondateur de The Sales Ninja',
+};
